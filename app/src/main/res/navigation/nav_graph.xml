@@ -10,4 +10,9 @@
         android:name="com.app.sns_project.MainFragment"
         android:label="홈"
         tools:layout="@layout/fragment_main" />
+    <fragment
+        android:id="@+id/postAddFragment"
+        android:name="com.app.sns_project.PostAddFragment"
+        android:label="새 게시물"
+        tools:layout="@layout/fragment_post_add" />
 </navigation>
