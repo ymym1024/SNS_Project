@@ -1,6 +1,8 @@
 package com.app.sns_project
 
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -8,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
 
 class SignupActivity : AppCompatActivity() {
@@ -19,17 +22,33 @@ class SignupActivity : AppCompatActivity() {
 
         val signupButton = findViewById<Button>(R.id.signupButton2)
         signupButton.setOnClickListener {
-            val userName = findViewById<EditText>(R.id.editTextUsername)
+            val userName = findViewById<EditText>(R.id.editTextUsername).text.toString()
             val userEmail = findViewById<EditText>(R.id.editTextUserEmail).text.toString()
             val userPassword = findViewById<EditText>(R.id.editTextUserPassword).text.toString()
             val userPasswordConfirm = findViewById<EditText>(R.id.editTextUserPasswordComfirm).text.toString()
 
-            if(userPassword.equals(userPasswordConfirm)) {
-                doSignup(userEmail, userPassword)
+            if(userEmail.isNotEmpty() && userPassword.isNotEmpty() && userName.isNotEmpty() &&
+                userPasswordConfirm.isNotEmpty()) {
+                if(userPassword.length < 6 || userPassword.length > 12) {
+                    Toast.makeText(this, "비밀번호는 6자리 이상 12자리 이하로 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                }
+
+                if(userPassword.equals(userPasswordConfirm)) {
+                    doSignup(userEmail, userPassword)
+                }
+                else {
+                    Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
+                }
+                updateProfile(userName)
+                val user = Firebase.auth.currentUser
+                if (user != null) {
+                    println("###########${user.displayName}")
+                }
             }
             else {
-                Toast.makeText(this, "비밀번호를 다시 확인해 주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "모든 정보를 입력해 주세요.", Toast.LENGTH_SHORT).show()
             }
+
         }
     }
 
@@ -38,6 +57,7 @@ class SignupActivity : AppCompatActivity() {
             .addOnCompleteListener(this) {
                 if (it.isSuccessful) {
                     Toast.makeText(this, "회원가입 성공!!", Toast.LENGTH_SHORT).show()
+                    //updateProfile()
                     startActivity(
                         Intent(this, LoginActivity::class.java))
                     finish()
@@ -45,6 +65,29 @@ class SignupActivity : AppCompatActivity() {
                     Log.w("LoginActivity", "signInWithEmail", it.exception)
                     Toast.makeText(this, "Creation failed.", Toast.LENGTH_SHORT).show()
                 }
+            }
+            .addOnFailureListener {
+                val errorMessage = it.message.toString()
+                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+            }
+
+    }
+
+    private fun updateProfile(userName: String) {
+        val user = Firebase.auth.currentUser
+        val profileUpdates = userProfileChangeRequest {
+            displayName = userName
+            //photoUri = Uri.parse("https://example.com/jane-q-user/profile.jpg")
+        }
+
+        user!!.updateProfile(profileUpdates)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, "User profile updated.")
+                }
+            }
+            .addOnFailureListener {
+                println("##########user profile not updated.")
             }
     }
 }

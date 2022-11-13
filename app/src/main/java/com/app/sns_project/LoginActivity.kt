@@ -22,7 +22,14 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             val userEmail = findViewById<EditText>(R.id.editTextEmail).text.toString()
             val userPassword = findViewById<EditText>(R.id.editTextPassword).text.toString()
-            doLogin(userEmail, userPassword)
+
+            if(userEmail.isNotEmpty() && userPassword.isNotEmpty()) {
+                doLogin(userEmail, userPassword)
+            }
+            else {
+                Toast.makeText(this, "이메일과 비밀번호를 모두 입력해 주세요.", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         val signupButton = findViewById<Button>(R.id.signupButton)
