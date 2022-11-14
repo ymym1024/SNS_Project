@@ -27,6 +27,7 @@ import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.databinding.FragmentPostAddBinding
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
@@ -47,7 +48,7 @@ class PostAddFragment : Fragment() {
     private lateinit var binding: FragmentPostAddBinding
 
     private var list = ArrayList<Uri>()
-    private var saveImageList =ArrayList<String>()
+    private var postId = ""
 
     lateinit var auth:FirebaseAuth
     lateinit var storage : FirebaseStorage
@@ -119,51 +120,48 @@ class PostAddFragment : Fragment() {
     //글 등록
     private fun addPost(){
         binding.saveButton.setOnClickListener {
-            if(list.isNotEmpty()) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    runBlocking {
-                        uploadImageAll()
-                    }
-                    Log.d("test","2")
-                    val post = PostDTO()
-                    post.uid = auth?.currentUser?.uid
-                    post.userId = auth?.currentUser?.email // 임시로 저장해놓음
-                    post.content = binding.postEdittext.text.toString()
-                    post.timestamp = System.currentTimeMillis()
-                    post.imageUrl = saveImageList
+            val post = PostDTO()
+            post.uid = auth?.currentUser?.uid
+            post.userId = auth?.currentUser?.email // 임시로 저장해놓음
+            post.content = binding.postEdittext.text.toString()
+            post.timestamp = System.currentTimeMillis()
 
-                    firestore?.collection("post")?.document()?.set(post).addOnCompleteListener {
-                        if(it.isSuccessful){
-                            Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
-                        }else{
-                            Snackbar.make(binding.root, "등록이 실패되었습니다.", Snackbar.LENGTH_SHORT).show()
-                        }
-                    }
+            if(list.isNotEmpty()){
+                firestore?.collection("post").add(post).addOnSuccessListener {
+                    Log.d("post_id",it.id)
+                    postId = it.id
+                    uploadImageAll()
+                }.addOnFailureListener {
+                    Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
                 }
-
+            }else{
+                firestore?.collection("post").add(post).addOnSuccessListener {
+                    Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
+                }.addOnFailureListener {
+                    Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
+                }
             }
-
         }
     }
 
-    suspend fun uploadImageAll() : List<String>{
-        Log.d("test","1")
+    private fun uploadImageAll(){
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-
-        for(i:Int in 0 until list.size-1){
+        var saveImageList:ArrayList<String> = arrayListOf()
+        for(i:Int in 0 until list.size){
+            Log.d("index",i.toString())
             var imageFileName = "upload_images/"+timestamp+i+"_.png"
             var imageRef = storage.reference.child(UPLOAD_FOLDER_NAME)?.child(imageFileName)
-            Log.d("test4",imageFileName)
 
             imageRef.putFile(list.get(i)).addOnSuccessListener {
                 imageRef.downloadUrl.addOnSuccessListener { uri->
                     val imageUri = uri.toString()
                     saveImageList.add(imageUri)
-                    Log.d("test3",saveImageList.toString())
+                    firestore.collection("post").document(postId).update("imageUrl",saveImageList).addOnSuccessListener {
+                        Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
+                    }
                 }
-            }.await()
+            }
         }
-        return saveImageList
     }
     //글자수 200이내
     private fun textWatcher(){
