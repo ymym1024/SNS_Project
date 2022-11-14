@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
@@ -27,7 +29,13 @@ class CommentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comment)
+        // 프레그먼트에서 게시물 말풍선을 클릭 하게 되면 setOnclickListener 를 통해서 CommentActivity가 띄워 지도록 코딩.
+        // Intent 를 통해서 CommentActivity::class.java로 넘어갈 수 있도록.
+        // Intent 안에다가 contentUid 도 넘겨 준다. contentListUidList[position] 값.
+        // startActivity(intent)
         contentUid = intent.getStringExtra("contentUid")
+
+        // collection(게시물) -> document -> collection(댓글) -> document -> 필드(comment, timestamp, uid, userId)
 
         val commentRecyclerView = findViewById<RecyclerView>(R.id.commentRecyclerview)
         commentRecyclerView.adapter = CommentRecyclerviewAdapter()
@@ -46,14 +54,18 @@ class CommentActivity : AppCompatActivity() {
                 .collection("comments").document().set(comment)
             commentEditText.setText("")
         }
+
+        //val deleteButton = findViewById<ImageButton>(R.id.deleteButton)
     }
 
     inner class CommentRecyclerviewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-        var comments : ArrayList<ContentDTO.Comment> = arrayListOf()
+        val deleteButton = findViewById<ImageButton>(R.id.deleteButton)
+
+        var comments : ArrayList<ContentDTO.Comment> = arrayListOf() // comment 를 담을 ArrayList
         init {
             FirebaseFirestore.getInstance()
-                .collection("posts")
+                .collection("post")
                 .document(contentUid!!)
                 .collection("comments")
                 .orderBy("timestamp")
@@ -71,7 +83,9 @@ class CommentActivity : AppCompatActivity() {
             return CustomViewHolder(view)
         }
 
-        inner class CustomViewHolder(view : View) : RecyclerView.ViewHolder(view)
+        inner class CustomViewHolder(view : View) : RecyclerView.ViewHolder(view) {
+
+        }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             var view = holder.itemView
@@ -88,6 +102,10 @@ class CommentActivity : AppCompatActivity() {
                             .into(view.findViewById(R.id.commentViewProfile))
                     }
                 }
+            deleteButton.setOnClickListener {
+                comments.remove(comments[position])
+                println("comment deleted")
+            }
         }
 
         override fun getItemCount(): Int {

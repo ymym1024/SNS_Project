@@ -26,4 +26,19 @@
         android:layout_height="wrap_content">
 
     </TextView>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="7dp"
+        android:src="@drawable/deleteImgButton"
+        android:scaleType="center"
+        android:text="delete"></ImageButton>
 </LinearLayout>
