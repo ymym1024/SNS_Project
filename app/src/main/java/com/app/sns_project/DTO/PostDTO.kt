@@ -3,6 +3,7 @@ package com.app.sns_project.DTO
 data class PostDTO(
     var uid : String?=null,
     var userId:String?=null,
+    var postId : String?=null,
     var content : String?=null,
     var timestamp : Long?=null,
     var imageUrl : List<String>? =null,

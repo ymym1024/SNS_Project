@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.databinding.FragmentMainBinding
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 
@@ -34,6 +36,7 @@ class MainFragment : Fragment() {
             postList.clear()
             for (item in result) {
                 val post = item.toObject(PostDTO::class.java)
+                post.postId = item.id // post id 추가
                 postList.add(post)
             }
             setAdapter()
@@ -63,6 +66,7 @@ class MainFragment : Fragment() {
             val postTime : TextView = itemView.findViewById(R.id.post_time)
             val postImage : ImageView = itemView.findViewById(R.id.post_image)
             val postFavoriteCnt : TextView = itemView.findViewById(R.id.post_favorite_cnt)
+            val postMenu : Button = itemView.findViewById(R.id.post_menu)
         }
 
         override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
@@ -75,6 +79,11 @@ class MainFragment : Fragment() {
             }
             if(itemList[position].favoriteCount>0){
                 holder.postFavoriteCnt.text = "${itemList[position].favoriteCount}명이 좋아합니다."
+            }
+
+            holder.postMenu.setOnClickListener {
+                //bottomsheet 보여주기
+                BottomSheetFragment(itemList[position].postId!!).show(parentFragmentManager,"PostMenu")
             }
         }
 
