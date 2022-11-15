@@ -9,5 +9,30 @@
         android:id="@+id/mainFragment"
         android:name="com.app.sns_project.MainFragment"
         android:label="홈"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_postUpdateFragment"
+            app:destination="@id/postUpdateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postAddFragment"
+        android:name="com.app.sns_project.PostAddFragment"
+        android:label="새 게시물"
+        tools:layout="@layout/fragment_post_add" />
+    <dialog
+        android:id="@+id/bottomSheetFragment"
+        android:name="com.app.sns_project.BottomSheetFragment"
+        android:label="fragment_bottom_sheet"
+        tools:layout="@layout/fragment_bottom_sheet" />
+    <fragment
+        android:id="@+id/postUpdateFragment"
+        android:name="com.app.sns_project.PostUpdateFragment"
+        android:label="게시물 수정"
+        tools:layout="@layout/fragment_post_update">
+        <argument
+            android:name="postId"
+            app:argType="string"
+            android:defaultValue='""' />
+    </fragment>
+
 </navigation>
