@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.databinding.FragmentBottomSheetBinding
-import com.app.sns_project.databinding.FragmentPostupdateBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -23,11 +23,6 @@ class BottomSheetFragment(val postId:String) : BottomSheetDialogFragment() {
 
     private lateinit var firestore: FirebaseFirestore
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,7 +33,9 @@ class BottomSheetFragment(val postId:String) : BottomSheetDialogFragment() {
 
         //수정하기 버튼
         binding.postUpdate.setOnClickListener {
-            update()
+           // findNavController().navigate(R.id.action_mainFragment_to_postUpdateFragment)
+            findNavController().navigate(MainFragmentDirections.actionMainFragmentToPostUpdateFragment(postId))
+            dismiss()
         }
 
         //삭제하기 버튼
@@ -47,11 +44,6 @@ class BottomSheetFragment(val postId:String) : BottomSheetDialogFragment() {
         }
 
         return binding.root
-    }
-
-    private fun update(){
-        view?.findNavController()?.navigate(R.id.action_bottomSheetFragment_to_postupdateFragment)
-        dismiss()
     }
 
     private fun delete(){
@@ -73,7 +65,6 @@ class BottomSheetFragment(val postId:String) : BottomSheetDialogFragment() {
     }
 
     private fun dataDelete(){
-        Log.d("삭제 document id",postId)
         firestore.collection("post").document(postId).delete().addOnSuccessListener {
             dismiss()
             Toast.makeText(context,"삭제에 성공했습니다!",Toast.LENGTH_LONG).show()

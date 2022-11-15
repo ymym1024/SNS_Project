@@ -2,42 +2,36 @@ package com.app.sns_project
 
 import android.Manifest
 import android.app.Activity
-import android.app.TaskInfo
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.databinding.FragmentPostAddBinding
-import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
+import java.io.File
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
@@ -47,7 +41,7 @@ import kotlin.collections.ArrayList
 class PostAddFragment : Fragment() {
     private lateinit var binding: FragmentPostAddBinding
 
-    private var list = ArrayList<Uri>()
+    private var list = ArrayList<String>()
     private var postId = ""
 
     lateinit var auth:FirebaseAuth
@@ -72,11 +66,15 @@ class PostAddFragment : Fragment() {
                     }
 
                     for (i in 0 until count) {
-                        val imageUri = it.clipData!!.getItemAt(i).uri
+                        //val imageUri = it.clipData!!.getItemAt(i).uri
+                        //list.add(imageUri)
+                        val imageUri = getRealPathFromURI(it.clipData!!.getItemAt(i).uri)
                         list.add(imageUri)
                     }
                 } else {      // 1장 선택한 경우
-                    val imageUri = it.data!!
+//                    val imageUri = it.data!!
+//                    list.add(imageUri)
+                    val imageUri = getRealPathFromURI(it.data!!)
                     list.add(imageUri)
                 }
                 setAdapater(list)
@@ -110,25 +108,37 @@ class PostAddFragment : Fragment() {
 
 
         //-----------------
-
         textWatcher()
         selectImage()
         addPost()
         return binding.root
     }
 
+    fun getRealPathFromURI(uri : Uri):String{
+        val buildName = Build.MANUFACTURER
+
+        var columnIndex = 0
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = activity?.contentResolver?.query(uri, proj, null, null, null)
+        if(cursor!!.moveToFirst()){
+            columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        }
+        val result = cursor.getString(columnIndex)
+        cursor.close()
+        return result
+    }
+
     //글 등록
     private fun addPost(){
         binding.saveButton.setOnClickListener {
             val post = PostDTO()
-            post.uid = auth?.currentUser?.uid
-            post.userId = auth?.currentUser?.email // 임시로 저장해놓음
+            post.uid = auth.currentUser?.uid
+            post.userId = auth.currentUser?.email // 임시로 저장해놓음
             post.content = binding.postEdittext.text.toString()
             post.timestamp = System.currentTimeMillis()
 
             if(list.isNotEmpty()){
                 firestore?.collection("post").add(post).addOnSuccessListener {
-                    Log.d("post_id",it.id)
                     postId = it.id
                     uploadImageAll()
                 }.addOnFailureListener {
@@ -152,7 +162,7 @@ class PostAddFragment : Fragment() {
             var imageFileName = "upload_images/"+timestamp+i+"_.png"
             var imageRef = storage.reference.child(UPLOAD_FOLDER_NAME)?.child(imageFileName)
 
-            imageRef.putFile(list.get(i)).addOnSuccessListener {
+            imageRef.putFile(list.get(i).toUri()).addOnSuccessListener {
                 imageRef.downloadUrl.addOnSuccessListener { uri->
                     val imageUri = uri.toString()
                     saveImageList.add(imageUri)
@@ -202,34 +212,11 @@ class PostAddFragment : Fragment() {
         }
     }
 
-    private fun setAdapater(list:ArrayList<Uri>){
-        val adapter = ItemPagerAdapter(list)
+    private fun setAdapater(list:ArrayList<String>){
+        val adapter = ItemPagerAdapter(requireActivity(),list)
         binding.imageList.adapter = adapter
         val gridLayoutManager = GridLayoutManager(context,2)
         binding.imageList.layoutManager = gridLayoutManager
     }
-}
-
-class ItemPagerAdapter(private val list: ArrayList<Uri>) :
-    RecyclerView.Adapter<ItemPagerAdapter.ViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_image_item, parent, false)
-        )
-    }
-
-    override fun getItemCount(): Int = list.count()
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = list[position]
-        holder.selectedImage.setImageURI(data)
-    }
-
-    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val selectedImage : ImageView = view.findViewById(R.id.select_image)
-    }
-
 }
 
