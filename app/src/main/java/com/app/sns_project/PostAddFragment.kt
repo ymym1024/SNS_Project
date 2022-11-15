@@ -161,8 +161,10 @@ class PostAddFragment : Fragment() {
             Log.d("index",i.toString())
             var imageFileName = "upload_images/"+timestamp+i+"_.png"
             var imageRef = storage.reference.child(UPLOAD_FOLDER_NAME)?.child(imageFileName)
+            val fileName = File(list.get(i)).toUri()
+            Log.d("fileName",fileName.toString())
 
-            imageRef.putFile(list.get(i).toUri()).addOnSuccessListener {
+            imageRef.putFile(fileName).addOnSuccessListener {
                 imageRef.downloadUrl.addOnSuccessListener { uri->
                     val imageUri = uri.toString()
                     saveImageList.add(imageUri)

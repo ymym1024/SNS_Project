@@ -16,12 +16,14 @@ import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.databinding.FragmentMainBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
 
     private var postList : ArrayList<PostDTO> = arrayListOf()
     private lateinit var mAdapter : RecyclerViewAdapter
@@ -32,6 +34,7 @@ class MainFragment : Fragment() {
     ): View? {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
 
         firestore.collection("post").get().addOnSuccessListener { result ->
             postList.clear()
@@ -81,7 +84,9 @@ class MainFragment : Fragment() {
             if(itemList[position].favoriteCount>0){
                 holder.postFavoriteCnt.text = "${itemList[position].favoriteCount}명이 좋아합니다."
             }
-
+            if(!holder.postUser.text.equals(auth.currentUser?.email)){
+                holder.postMenu.visibility = View.INVISIBLE
+            }
             holder.postMenu.setOnClickListener {
                 //bottomsheet 보여주기
                 BottomSheetFragment(itemList[position].postId!!).show(parentFragmentManager,"PostMenu")
