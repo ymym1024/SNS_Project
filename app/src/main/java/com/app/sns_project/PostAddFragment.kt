@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,14 +65,10 @@ class PostAddFragment : Fragment() {
                     }
 
                     for (i in 0 until count) {
-                        //val imageUri = it.clipData!!.getItemAt(i).uri
-                        //list.add(imageUri)
                         val imageUri = getRealPathFromURI(it.clipData!!.getItemAt(i).uri)
                         list.add(imageUri)
                     }
                 } else {      // 1장 선택한 경우
-//                    val imageUri = it.data!!
-//                    list.add(imageUri)
                     val imageUri = getRealPathFromURI(it.data!!)
                     list.add(imageUri)
                 }
@@ -100,14 +95,11 @@ class PostAddFragment : Fragment() {
                     if (view.isSuccessful) {
                         binding.userName.text = Firebase.auth.currentUser!!.email
                     } else {
-                        Log.w("LoginActivity", "signInWithEmail", view.exception)
                         Toast.makeText(context, "Authentication failed.", Toast.LENGTH_SHORT).show()
                     }
                 }
         }
 
-
-        //-----------------
         textWatcher()
         selectImage()
         addPost()
@@ -145,6 +137,7 @@ class PostAddFragment : Fragment() {
                     Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
                 }
             }else{
+                post.imageUrl = arrayListOf()
                 firestore?.collection("post").add(post).addOnSuccessListener {
                     Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
                 }.addOnFailureListener {
@@ -158,11 +151,9 @@ class PostAddFragment : Fragment() {
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         var saveImageList:ArrayList<String> = arrayListOf()
         for(i:Int in 0 until list.size){
-            Log.d("index",i.toString())
             var imageFileName = "upload_images/"+timestamp+i+"_.png"
             var imageRef = storage.reference.child(UPLOAD_FOLDER_NAME)?.child(imageFileName)
             val fileName = File(list.get(i)).toUri()
-            Log.d("fileName",fileName.toString())
 
             imageRef.putFile(fileName).addOnSuccessListener {
                 imageRef.downloadUrl.addOnSuccessListener { uri->

@@ -8,7 +8,7 @@ data class PostDTO(
     var timestamp : Long?=null,
     var imageUrl : List<String>? =null,
     var favoriteCount:Int = 0,
-    var favorites : Map<String,Boolean> = HashMap()
+    var favorites : HashMap<String,Boolean> = HashMap()
 ){
     data class Comment(
         val uid:String,

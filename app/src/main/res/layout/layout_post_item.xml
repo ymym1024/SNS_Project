@@ -47,26 +47,44 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-   <ImageView
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/post_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+<!--    <ImageView-->
+<!--        android:id="@+id/post_image"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:adjustViewBounds="true"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        tools:srcCompat="@tools:sample/backgrounds/scenic" />-->
+
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+        android:id="@+id/post_image_indicator"
         android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:adjustViewBounds="true"
-       android:scaleType="centerCrop"
-       tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        app:dotsColor="@color/black02"
+        app:dotsCornerRadius="10dp"
+        app:dotsSize="10dp"
+        app:dotsSpacing="4dp"
+        app:dotsWidthFactor="1"
+        app:progressMode="true"
+        app:selectedDotColor="@color/blue_01_main" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatButton
+        <ImageView
             android:id="@+id/post_favorite"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="5dp"
-            android:background="@drawable/ic_baseline_favorite_border_24"
-            tools:ignore="TouchTargetSizeCheck" />
+            android:src="@drawable/ic_baseline_favorite_border_24" />
 
         <TextView
             android:id="@+id/post_favorite_cnt"

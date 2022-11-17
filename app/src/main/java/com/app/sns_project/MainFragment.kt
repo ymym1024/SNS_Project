@@ -1,29 +1,30 @@
 package com.app.sns_project
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.navigation.findNavController
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.databinding.FragmentMainBinding
 import com.bumptech.glide.Glide
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.text.SimpleDateFormat
+
 
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private var uid = ""
 
     private var postList : ArrayList<PostDTO> = arrayListOf()
     private lateinit var mAdapter : RecyclerViewAdapter
@@ -35,6 +36,8 @@ class MainFragment : Fragment() {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+        uid = auth.currentUser?.uid!!
+
 
         firestore.collection("post").get().addOnSuccessListener { result ->
             postList.clear()
@@ -47,6 +50,7 @@ class MainFragment : Fragment() {
             mAdapter.notifyDataSetChanged()
         }
 
+
         return binding.root
     }
 
@@ -57,10 +61,12 @@ class MainFragment : Fragment() {
         binding.postRecyclerview.setHasFixedSize(true)
     }
 
-    inner class RecyclerViewAdapter(val itemList: ArrayList<PostDTO>) : RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder>() {
+    inner class RecyclerViewAdapter(var itemList: ArrayList<PostDTO>) : RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder>() {
+
+        var mViewPagerState: HashMap<Int, Int> = HashMap()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-            return CustomViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_post_item, parent, false))
+            return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_post_item, parent, false))
         }
 
         inner class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -68,8 +74,10 @@ class MainFragment : Fragment() {
             val userName : TextView = itemView.findViewById(R.id.user_name)
             val postContent : TextView = itemView.findViewById(R.id.post_content)
             val postTime : TextView = itemView.findViewById(R.id.post_time)
-            val postImage : ImageView = itemView.findViewById(R.id.post_image)
+            val postImageList : ViewPager2 = itemView.findViewById(R.id.post_image)
+            val postIndicator :DotsIndicator = itemView.findViewById(R.id.post_image_indicator)
             val postFavoriteCnt : TextView = itemView.findViewById(R.id.post_favorite_cnt)
+            val postFavorite : ImageView = itemView.findViewById(R.id.post_favorite)
             val postMenu : Button = itemView.findViewById(R.id.post_menu)
         }
 
@@ -77,24 +85,79 @@ class MainFragment : Fragment() {
             holder.postUser.text = itemList[position].userId
             holder.userName.text = itemList[position].userId
             holder.postContent.text = itemList[position].content
-           // holder.postTime.text = convertTimestampToDate(itemList[position].timestamp)
-            if(itemList[position].imageUrl?.isNotEmpty() == true){
-                Glide.with(context!!).load(itemList[position].imageUrl?.get(0)).into(holder.postImage) //첫번째 이미지만 불러오기(임시)
+            holder.postTime.text = convertTimestampToDate(itemList[position].timestamp!!)
+
+            if(itemList[position].imageUrl?.isEmpty()!!){
+                holder.postImageList.visibility = View.GONE
+                holder.postIndicator.visibility = View.GONE
+                //holder.postImage.visibility = View.GONE
+            }else{
+                holder.postImageList.adapter = ImageViewPager2(itemList[position]?.imageUrl)
+                //holder.postImageList.id = position+1
+                //viewpager와 recyclerview sink
+//                if(mViewPagerState.containsKey(position)){
+//                    holder.postImageList.setCurrentItem(mViewPagerState.get(position)!!)
+//                }
+
+                if(itemList[position].imageUrl?.size == 1){
+                    holder.postIndicator.visibility = View.GONE
+                }else{
+                    holder.postIndicator.setViewPager2(holder.postImageList)
+                }
             }
+
             if(itemList[position].favoriteCount>0){
                 holder.postFavoriteCnt.text = "${itemList[position].favoriteCount}명이 좋아합니다."
             }
-            if(!holder.postUser.text.equals(auth.currentUser?.email)){
+            if(!holder.postUser.text.equals(auth.currentUser?.email)) {
                 holder.postMenu.visibility = View.INVISIBLE
             }
+
             holder.postMenu.setOnClickListener {
-                //bottomsheet 보여주기
+                //수정, 삭제 보여주기
                 BottomSheetFragment(itemList[position].postId!!).show(parentFragmentManager,"PostMenu")
             }
+
+            //좋아요 버튼 상태값 변경
+            if(itemList[position].favorites.containsKey(uid)){
+                holder.postFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
+            }else{
+                holder.postFavorite.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+            }
+
+            //좋아요 버튼 클릭 이벤트
+            holder.postFavorite.setOnClickListener {
+                clickFavorite(position)
+            }
+        }
+        override fun getItemCount(): Int {
+            return itemList.size
         }
 
-        override fun getItemCount(): Int {
-            return postList.size
+        override fun onViewRecycled(holder: CustomViewHolder) {
+            //mViewPagerState.put(holder.adapterPosition,holder.postImageList.currentItem)
+            super.onViewRecycled(holder)
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return position
+        }
+
+        private fun clickFavorite(position:Int){
+            val doc = firestore?.collection("post").document(itemList[position].postId!!)
+
+            firestore?.runTransaction { transaction ->
+                val post = transaction.get(doc).toObject(PostDTO::class.java)
+
+                if (post!!.favorites.containsKey(uid)) {
+                    post.favoriteCount = post?.favoriteCount - 1
+                    post.favorites.remove(uid) // 사용자 remove
+                } else {
+                    post.favoriteCount = post?.favoriteCount + 1
+                    post.favorites[uid] = true //사용자 추가
+                }
+                transaction.set(doc, post)
+            }
         }
 
         private fun convertTimestampToDate(time: Long?): String {
@@ -103,4 +166,21 @@ class MainFragment : Fragment() {
             return date
         }
     }
+
+
+    inner class ImageViewPager2(private var list: List<String>?): RecyclerView.Adapter<ImageViewPager2.ViewHolder>(){
+
+        inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+            val Image : ImageView = view.findViewById(R.id.pagerImage)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_pager_item, parent, false))
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            Glide.with(holder.Image.context).load(list?.get(position)!!).into(holder.Image)
+        }
+
+        override fun getItemCount(): Int = list!!.size
+    }
 }
+
