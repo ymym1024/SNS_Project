@@ -5,17 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CommentActivity">
-    
-    <Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
 
-    </Toolbar>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/commentViewProfile"
+            android:layout_margin="7dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp">
+        </ImageView>
+        <TextView
+            android:id="@+id/commentViewUserID"
+            android:text="UserID"
+            android:textStyle="bold"
+            android:layout_margin="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </TextView>
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/my_img"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/my_text"
+        android:layout_below="@+id/my_img"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+    </TextView>
+
     <LinearLayout
         android:orientation="horizontal"
-        android:id="@+id/toolbar_division"
-        android:layout_below="@+id/my_toolbar"
+        android:id="@+id/image_division"
+        android:layout_below="@+id/my_text"
         android:background="@color/blue_01_main"
         android:layout_width="match_parent"
         android:layout_height="1dp">
@@ -23,7 +53,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="8dp"
         android:layout_marginBottom="30dp"
-        android:layout_below="@+id/toolbar_division"
+        android:layout_below="@+id/image_division"
         android:id="@+id/commentRecyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
