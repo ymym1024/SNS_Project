@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/ic_add_button.xml" value="0.134" />
         <entry key="app/src/main/res/drawable/ic_add_icon.xml" value="0.117" />
         <entry key="app/src/main/res/drawable/ic_baseline_delete_outline_24.xml" value="0.139" />
+        <entry key="app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.137" />
         <entry key="app/src/main/res/drawable/ic_baseline_favorite_border_24.xml" value="0.2445" />
         <entry key="app/src/main/res/drawable/ic_chat_icon.xml" value="0.117" />
         <entry key="app/src/main/res/drawable/ic_group.xml" value="0.117" />
@@ -20,7 +21,7 @@
         <entry key="app/src/main/res/layout/fragment_bottom_sheet.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_main.xml" value="0.10572916666666667" />
         <entry key="app/src/main/res/layout/fragment_post.xml" value="0.1796875" />
-        <entry key="app/src/main/res/layout/fragment_post_add.xml" value="0.20930232558139536" />
+        <entry key="app/src/main/res/layout/fragment_post_add.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_post_update.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_postupdate.xml" value="0.335" />
         <entry key="app/src/main/res/layout/layout_bottom_sheet.xml" value="0.375" />

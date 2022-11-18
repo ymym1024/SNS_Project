@@ -88,17 +88,7 @@ class PostAddFragment : Fragment() {
         storage = Firebase.storage
         firestore = FirebaseFirestore.getInstance()
 
-        //TODO : 나중에 삭제할 로직 ------
-        activity?.let {
-            Firebase.auth.signInWithEmailAndPassword("ymjeong@hansung.ac.kr", "test1234!")
-                .addOnCompleteListener(it) { view ->
-                    if (view.isSuccessful) {
-                        binding.userName.text = Firebase.auth.currentUser!!.email
-                    } else {
-                        Toast.makeText(context, "Authentication failed.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-        }
+        binding.userName.text = "jeong1" //TODO : 합쳤을때 수정
 
         textWatcher()
         selectImage()
@@ -123,9 +113,11 @@ class PostAddFragment : Fragment() {
     //글 등록
     private fun addPost(){
         binding.saveButton.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
+
             val post = PostDTO()
             post.uid = auth.currentUser?.uid
-            post.userId = auth.currentUser?.email // 임시로 저장해놓음
+            post.userName = binding.userName.text.toString() // 임시로 저장해놓음
             post.content = binding.postEdittext.text.toString()
             post.timestamp = System.currentTimeMillis()
 
@@ -139,8 +131,10 @@ class PostAddFragment : Fragment() {
             }else{
                 post.imageUrl = arrayListOf()
                 firestore?.collection("post").add(post).addOnSuccessListener {
+                    binding.progressBar.visibility = View.GONE
                     Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
                 }.addOnFailureListener {
+                    binding.progressBar.visibility = View.GONE
                     Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
                 }
             }
@@ -160,7 +154,13 @@ class PostAddFragment : Fragment() {
                     val imageUri = uri.toString()
                     saveImageList.add(imageUri)
                     firestore.collection("post").document(postId).update("imageUrl",saveImageList).addOnSuccessListener {
-                        Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
+                        binding.progressBar.visibility = View.GONE
+                        if(i==list.size-1){
+                            Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
+                        }
+                    }.addOnFailureListener {
+                        binding.progressBar.visibility = View.GONE
+                        Snackbar.make(binding.root, "이미지 등록에 실패했습니다.", Snackbar.LENGTH_SHORT).show()
                     }
                 }
             }

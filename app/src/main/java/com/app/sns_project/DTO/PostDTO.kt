@@ -2,11 +2,10 @@ package com.app.sns_project.DTO
 
 data class PostDTO(
     var uid : String?=null,
-    var userId:String?=null,
-    var postId : String?=null,
+    var userName:String?=null,
     var content : String?=null,
     var timestamp : Long?=null,
-    var imageUrl : List<String>? =null,
+    var imageUrl : List<String>? = arrayListOf(),
     var favoriteCount:Int = 0,
     var favorites : HashMap<String,Boolean> = HashMap()
 ){

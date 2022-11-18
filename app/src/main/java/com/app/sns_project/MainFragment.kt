@@ -1,12 +1,15 @@
 package com.app.sns_project
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.collection.ArrayMap
+import androidx.collection.arrayMapOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,8 +28,12 @@ class MainFragment : Fragment() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private var uid = ""
+    private var userName = ""
 
     private var postList : ArrayList<PostDTO> = arrayListOf()
+    private var postIdList : ArrayList<String> = arrayListOf()
+    private var userFollowingList = HashMap<String,String>()
+
     private lateinit var mAdapter : RecyclerViewAdapter
 
     override fun onCreateView(
@@ -38,20 +45,46 @@ class MainFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         uid = auth.currentUser?.uid!!
 
-
-        firestore.collection("post").get().addOnSuccessListener { result ->
-            postList.clear()
-            for (item in result) {
-                val post = item.toObject(PostDTO::class.java)
-                post.postId = item.id // post id 추가
-                postList.add(post)
-            }
-            setAdapter()
-            mAdapter.notifyDataSetChanged()
-        }
-
+        userName = "jeong" //TODO :: 합쳤을때 수정해야함 -> 전역변수로 username을 저장
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dataRefresh()
+    }
+
+    private fun dataRefresh(){
+        postList.clear()
+        postIdList.clear()
+
+        setAdapter()
+        firestore.collection("user").document(userName).get().addOnSuccessListener {
+            val followingList = it["following"] as HashMap<String,String>
+            for(follow in followingList.keys){
+                val value = followingList.get(follow) as String
+                userFollowingList.put(follow,value)
+                firestore.collection("post").whereEqualTo("userName",follow).get().addOnSuccessListener { result->
+                for (doc in result) {
+                        val post = doc.toObject(PostDTO::class.java)
+                        postIdList.add(doc.id) // post id 추가
+                        postList.add(post)
+                    }
+                    mAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+//        collectionRef.get().addOnSuccessListener { result ->
+//            postList.clear()
+//            for (item in result) {
+//                val post = item.toObject(PostDTO::class.java)
+//                postIdList.add(item.id) // post id 추가
+//                postList.add(post)
+//            }
+//            setAdapter()
+//            mAdapter.notifyDataSetChanged()
+//        }
     }
 
     private fun setAdapter(){
@@ -63,8 +96,6 @@ class MainFragment : Fragment() {
 
     inner class RecyclerViewAdapter(var itemList: ArrayList<PostDTO>) : RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder>() {
 
-        var mViewPagerState: HashMap<Int, Int> = HashMap()
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
             return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_post_item, parent, false))
         }
@@ -72,6 +103,7 @@ class MainFragment : Fragment() {
         inner class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val postUser : TextView = itemView.findViewById(R.id.post_user)
             val userName : TextView = itemView.findViewById(R.id.user_name)
+            val userImage : ImageView = itemView.findViewById(R.id.user_image)
             val postContent : TextView = itemView.findViewById(R.id.post_content)
             val postTime : TextView = itemView.findViewById(R.id.post_time)
             val postImageList : ViewPager2 = itemView.findViewById(R.id.post_image)
@@ -82,22 +114,19 @@ class MainFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-            holder.postUser.text = itemList[position].userId
-            holder.userName.text = itemList[position].userId
+            holder.postUser.text = itemList[position].userName
+            holder.userName.text = itemList[position].userName
             holder.postContent.text = itemList[position].content
             holder.postTime.text = convertTimestampToDate(itemList[position].timestamp!!)
+
+            //user 이미지
+            Glide.with(holder.userImage.context).load(userFollowingList.get(itemList[position].userName)).into(holder.userImage)
 
             if(itemList[position].imageUrl?.isEmpty()!!){
                 holder.postImageList.visibility = View.GONE
                 holder.postIndicator.visibility = View.GONE
-                //holder.postImage.visibility = View.GONE
             }else{
                 holder.postImageList.adapter = ImageViewPager2(itemList[position]?.imageUrl)
-                //holder.postImageList.id = position+1
-                //viewpager와 recyclerview sink
-//                if(mViewPagerState.containsKey(position)){
-//                    holder.postImageList.setCurrentItem(mViewPagerState.get(position)!!)
-//                }
 
                 if(itemList[position].imageUrl?.size == 1){
                     holder.postIndicator.visibility = View.GONE
@@ -115,7 +144,7 @@ class MainFragment : Fragment() {
 
             holder.postMenu.setOnClickListener {
                 //수정, 삭제 보여주기
-                BottomSheetFragment(itemList[position].postId!!).show(parentFragmentManager,"PostMenu")
+                BottomSheetFragment(postIdList[position]).show(parentFragmentManager,"PostMenu")
             }
 
             //좋아요 버튼 상태값 변경
@@ -127,16 +156,26 @@ class MainFragment : Fragment() {
 
             //좋아요 버튼 클릭 이벤트
             holder.postFavorite.setOnClickListener {
-                clickFavorite(position)
+                val doc = firestore?.collection("post").document(postIdList[position])
+
+                firestore?.runTransaction { transaction ->
+                    val post = transaction.get(doc).toObject(PostDTO::class.java)
+
+                    if (post!!.favorites.containsKey(uid)) {
+                        post.favoriteCount = post?.favoriteCount - 1
+                        post.favorites.remove(uid) // 사용자 remove
+                    } else {
+                        post.favoriteCount = post?.favoriteCount + 1
+                        post.favorites[uid] = true //사용자 추가
+                    }
+                    transaction.set(doc, post)
+                }.addOnSuccessListener {
+                    holder.postFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
+                }
             }
         }
         override fun getItemCount(): Int {
             return itemList.size
-        }
-
-        override fun onViewRecycled(holder: CustomViewHolder) {
-            //mViewPagerState.put(holder.adapterPosition,holder.postImageList.currentItem)
-            super.onViewRecycled(holder)
         }
 
         override fun getItemViewType(position: Int): Int {
@@ -144,20 +183,7 @@ class MainFragment : Fragment() {
         }
 
         private fun clickFavorite(position:Int){
-            val doc = firestore?.collection("post").document(itemList[position].postId!!)
 
-            firestore?.runTransaction { transaction ->
-                val post = transaction.get(doc).toObject(PostDTO::class.java)
-
-                if (post!!.favorites.containsKey(uid)) {
-                    post.favoriteCount = post?.favoriteCount - 1
-                    post.favorites.remove(uid) // 사용자 remove
-                } else {
-                    post.favoriteCount = post?.favoriteCount + 1
-                    post.favorites[uid] = true //사용자 추가
-                }
-                transaction.set(doc, post)
-            }
         }
 
         private fun convertTimestampToDate(time: Long?): String {
