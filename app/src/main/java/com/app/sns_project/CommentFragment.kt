@@ -18,7 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class CommentFragment : Fragment(R.layout.activity_comment) {
     var contentUid : String? = null
-    var a = null;
+    var ab = null;
     lateinit var v : View
 
     override fun onCreateView(
