@@ -50,7 +50,7 @@ class PostUpdateFragment : Fragment() {
 
     private fun queryItem(itemId:String){
         firestore?.collection("post").document(itemId).get().addOnSuccessListener {
-            binding.userName.text = auth?.currentUser?.email
+            binding.userName.text = it["userName"] as String
             binding.postEdittext.setText( it["content"] as String)
             val imageArray = it["imageUrl"] as ArrayList<String>
 
