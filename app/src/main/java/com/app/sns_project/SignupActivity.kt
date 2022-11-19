@@ -70,7 +70,7 @@ class SignupActivity : AppCompatActivity() {
                         followerCount = 0,
                         followingCount = 0,
                         userName = userName,
-                        profileImage = "gs://snsproject-638d2.appspot.com/images/profile_images/jeong1.jpeg",
+                        profileImage = "https://firebasestorage.googleapis.com/v0/b/snsproject-638d2.appspot.com/o/images%2Fprofile_images%2Fjeong.png?alt=media&token=11f05012-c31e-46b5-8d17-b21677cf7c67",
                         followers = HashMap(),
                         following = HashMap()
                     )
