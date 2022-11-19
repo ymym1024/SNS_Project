@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -64,4 +65,8 @@ dependencies {
     //원형이미지뷰
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.tbuonomo:dotsindicator:4.3'
+
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+//    implementation 'com.github.ShahabGT:InstagramPicker:2.2.0'
 }

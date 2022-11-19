@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.sns_project.databinding.FragmentPostUpdateBinding
@@ -65,7 +66,8 @@ class PostUpdateFragment : Fragment() {
         val content = binding.postEdittext.text.toString()
         firestore?.collection("post").document(itemId).update("content",content).addOnSuccessListener {
             Snackbar.make(binding.root, "수정되었습니다!!", Snackbar.LENGTH_SHORT).show()
-            //업데이트 후 글상세화면으로
+            //업데이트 후 메인화면
+            findNavController().navigate(R.id.action_postUpdateFragment_to_mainFragment)
         }
     }
 }

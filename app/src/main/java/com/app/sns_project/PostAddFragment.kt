@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,14 +65,10 @@ class PostAddFragment : Fragment() {
                     }
 
                     for (i in 0 until count) {
-                        //val imageUri = it.clipData!!.getItemAt(i).uri
-                        //list.add(imageUri)
                         val imageUri = getRealPathFromURI(it.clipData!!.getItemAt(i).uri)
                         list.add(imageUri)
                     }
                 } else {      // 1장 선택한 경우
-//                    val imageUri = it.data!!
-//                    list.add(imageUri)
                     val imageUri = getRealPathFromURI(it.data!!)
                     list.add(imageUri)
                 }
@@ -93,21 +88,8 @@ class PostAddFragment : Fragment() {
         storage = Firebase.storage
         firestore = FirebaseFirestore.getInstance()
 
-        //TODO : 나중에 삭제할 로직 ------
-        activity?.let {
-            Firebase.auth.signInWithEmailAndPassword("ymjeong@hansung.ac.kr", "test1234!")
-                .addOnCompleteListener(it) { view ->
-                    if (view.isSuccessful) {
-                        binding.userName.text = Firebase.auth.currentUser!!.email
-                    } else {
-                        Log.w("LoginActivity", "signInWithEmail", view.exception)
-                        Toast.makeText(context, "Authentication failed.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-        }
+        binding.userName.text = "jeong1" //TODO : 합쳤을때 수정
 
-
-        //-----------------
         textWatcher()
         selectImage()
         addPost()
@@ -131,9 +113,11 @@ class PostAddFragment : Fragment() {
     //글 등록
     private fun addPost(){
         binding.saveButton.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
+
             val post = PostDTO()
             post.uid = auth.currentUser?.uid
-            post.userId = auth.currentUser?.email // 임시로 저장해놓음
+            post.userName = binding.userName.text.toString() // 임시로 저장해놓음
             post.content = binding.postEdittext.text.toString()
             post.timestamp = System.currentTimeMillis()
 
@@ -145,9 +129,12 @@ class PostAddFragment : Fragment() {
                     Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
                 }
             }else{
+                //post.imageUrl = arrayListOf()
                 firestore?.collection("post").add(post).addOnSuccessListener {
+                    binding.progressBar.visibility = View.GONE
                     Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
                 }.addOnFailureListener {
+                    binding.progressBar.visibility = View.GONE
                     Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
                 }
             }
@@ -158,18 +145,22 @@ class PostAddFragment : Fragment() {
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         var saveImageList:ArrayList<String> = arrayListOf()
         for(i:Int in 0 until list.size){
-            Log.d("index",i.toString())
             var imageFileName = "upload_images/"+timestamp+i+"_.png"
             var imageRef = storage.reference.child(UPLOAD_FOLDER_NAME)?.child(imageFileName)
             val fileName = File(list.get(i)).toUri()
-            Log.d("fileName",fileName.toString())
 
             imageRef.putFile(fileName).addOnSuccessListener {
                 imageRef.downloadUrl.addOnSuccessListener { uri->
                     val imageUri = uri.toString()
                     saveImageList.add(imageUri)
                     firestore.collection("post").document(postId).update("imageUrl",saveImageList).addOnSuccessListener {
-                        Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
+                        binding.progressBar.visibility = View.GONE
+                        if(i==list.size-1){
+                            Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
+                        }
+                    }.addOnFailureListener {
+                        binding.progressBar.visibility = View.GONE
+                        Snackbar.make(binding.root, "이미지 등록에 실패했습니다.", Snackbar.LENGTH_SHORT).show()
                     }
                 }
             }
