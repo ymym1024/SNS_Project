@@ -46,6 +46,7 @@ class MainFragment : Fragment() {
         uid = auth.currentUser?.uid!!
 
         userName = "jeong" //TODO :: 합쳤을때 수정해야함 -> 전역변수로 username을 저장
+        Log.d("user:",FirebaseAuth.getInstance().currentUser?.email!!)
 
         return binding.root
     }

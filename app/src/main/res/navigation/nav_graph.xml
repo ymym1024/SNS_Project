@@ -42,4 +42,11 @@
             app:destination="@id/mainFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/FollowFragment"
+        android:name="com.app.sns_project.FollowFragment"
+        tools:layout="@layout/fragment_follow">
+    </fragment>
+
+
 </navigation>

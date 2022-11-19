@@ -66,7 +66,11 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.tbuonomo:dotsindicator:4.3'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
 
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
+
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 //    implementation 'com.github.ShahabGT:InstagramPicker:2.2.0'
 }

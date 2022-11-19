@@ -24,12 +24,12 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-//        val appBarConfiguration = AppBarConfiguration(navController.graph)
-  //      setupActionBarWithNavController(navController, appBarConfiguration)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.mainFragment,R.id.FollowFragment,R.id.postAddFragment,R.id.ChatFragment,R.id.ProfileFragment))
-        NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration)
+//        val appBarConfiguration = AppBarConfiguration(
+//            setOf(R.id.mainFragment,R.id.FollowFragment,R.id.postAddFragment,R.id.ChatFragment,R.id.ProfileFragment))
+//        NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration)
         binding.bottomNav.setupWithNavController(navController)
     }
 
