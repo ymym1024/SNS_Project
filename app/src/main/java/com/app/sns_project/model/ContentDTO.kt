@@ -14,4 +14,10 @@ data class ContentDTO(val imageUrl : String? = null, // 이미지 관리
                        var comment : String? = null, // comment 관리
                        var userName : String? = "default user", // userName 관리
                        var timestamp: Long? = null) // 댓글을 올린 시간 관리
+    data class UserInfo(var userName: String? = null,//uid 관리
+                        var followerCount: Int = 0,
+                        var followingCount: Int = 0,
+                        var profileImage: String? = null,
+                        var followers: HashMap<String, String>,
+                        var following: HashMap<String, String>)
 }
