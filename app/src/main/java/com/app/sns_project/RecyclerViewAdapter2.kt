@@ -10,6 +10,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
@@ -38,7 +40,7 @@ class RecyclerViewAdapter2(private val viewModel: MyViewModel, val context: Cont
 
         val db = Firebase.firestore
         val userColRef = db.collection("user")
-        val currentUid = "currentUserUid"
+        val currentUid = Firebase.auth.currentUser?.uid.toString()
 
 
         private val profileImage: CircleImageView = itemView.findViewById(R.id.circleImageView)

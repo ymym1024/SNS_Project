@@ -9,6 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -18,7 +20,7 @@ class FollowingFragment : Fragment() {
     val db = Firebase.firestore
 
     // 현재 로그인한 user의 username
-    val currentUid = "currentUserUid"
+    val currentUid = Firebase.auth.currentUser?.uid.toString()
 
     // user Collection Ref
     val userColRef = db.collection("user")
