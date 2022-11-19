@@ -46,7 +46,7 @@ class FollowerFragment : Fragment() {
         // firestore에서 로그인한 user의 uid인 document에서 팔로워 목록과 프로필 사진을 끌어와 viewmodel에 저장
         userColRef.document(currentUid).get()
             .addOnSuccessListener {
-                for (i in it["follower"] as MutableMap<*, *>)
+                for (i in it["followers"] as MutableMap<*, *>)
                     viewModel.addItem(Item(i.key.toString(),i.value.toString()))
             }
 

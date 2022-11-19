@@ -100,25 +100,25 @@ class RecyclerViewAdapter2(private val viewModel: MyViewModel, val context: Cont
                     userColRef.document(currentUid)
                         .update("following",followingList) // firestore 팔로잉 목록 update
                     userColRef.document(currentUid)
-                        .update("following count",followingList.size) // firestore 팔로잉 수 update
+                        .update("followingCount",followingList.size) // firestore 팔로잉 수 update
 
 
 
 
 
-                    val currentUsername = it["username"].toString() // 현재 로그인한 user의 username 받아오기
+                    val currentUsername = it["userName"].toString() // 현재 로그인한 user의 username 받아오기
 
 
-                    userColRef.whereEqualTo("username",clickedUser.username).get()
+                    userColRef.whereEqualTo("userName",clickedUser.username).get()
                         .addOnSuccessListener {
                             for(doc in it){
-                                val followerList = doc["follower"] as MutableMap<String, String> // 언팔로우당한 user의 팔로워 목록에서
+                                val followerList = doc["followers"] as MutableMap<String, String> // 언팔로우당한 user의 팔로워 목록에서
                                 followerList.remove(currentUsername) // 현재 로그인한 user 삭제
 
                                 userColRef.document(doc.id)
-                                    .update("follower",followerList) // firestore 팔로워 목록 update
+                                    .update("followers",followerList) // firestore 팔로워 목록 update
                                 userColRef.document(doc.id)
-                                    .update("follower count",followerList.size) // firestore 팔로워 수 update
+                                    .update("followerCount",followerList.size) // firestore 팔로워 수 update
                             }
                         }
                 }

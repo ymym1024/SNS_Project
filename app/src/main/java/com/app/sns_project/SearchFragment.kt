@@ -61,7 +61,7 @@ class SearchFragment() : Fragment() {
         }
         else{
 //            Log.e("searchName",searchName)
-            userColRef.whereEqualTo("username",searchName).get()
+            userColRef.whereEqualTo("userName",searchName).get()
                 .addOnSuccessListener {
                     if(it.isEmpty){
                         profileImage.visibility = View.INVISIBLE
@@ -69,17 +69,17 @@ class SearchFragment() : Fragment() {
                     }
                     for(doc in it){
                         // 프로필사진 세팅
-                        Glide.with(view).load(doc["profile image"].toString()).into(profileImage)
+                        Glide.with(view).load(doc["profileImage"].toString()).into(profileImage)
                         profileImage.visibility = View.VISIBLE
 
                         // username 세팅
-                        usernameTextView.text = doc["username"].toString()
+                        usernameTextView.text = doc["userName"].toString()
 
                         // button 세팅
                         userColRef.document(currentUid).get()
                             .addOnSuccessListener {
                                 val followingList = it["following"] as MutableMap<String,String> // 현재 로그인한 user의 팔로잉 리스트
-                                if(followingList.containsKey(doc["username"].toString())) {// 팔로잉중이면
+                                if(followingList.containsKey(doc["userName"].toString())) {// 팔로잉중이면
                                     followButton.visibility = View.INVISIBLE
                                     followingButton.visibility = View.VISIBLE
                                 }
@@ -94,10 +94,10 @@ class SearchFragment() : Fragment() {
         }
 
         followButton.setOnClickListener {
-            userColRef.whereEqualTo("username",searchName).get()
+            userColRef.whereEqualTo("userName",searchName).get()
                 .addOnSuccessListener {
                     for (doc in it){
-                        followUser(doc["username"].toString(),doc["profile image"].toString())
+                        followUser(doc["userName"].toString(),doc["profileImage"].toString())
                         followButton.visibility = View.INVISIBLE
                         followingButton.visibility = View.VISIBLE
                     }
@@ -115,23 +115,23 @@ class SearchFragment() : Fragment() {
                 userColRef.document(currentUid)
                     .update("following", followingList) // firestore 팔로잉 목록 update
                 userColRef.document(currentUid)
-                    .update("following count", followingList.size) // firestore 팔로잉 수 update
+                    .update("followingCount", followingList.size) // firestore 팔로잉 수 update
 
 
 
-                val currentUsername = it["username"].toString() // 현재 로그인한 user의 username 받아오기
-                val currentUserProfileImage = it["profile image"].toString() // 현재 로그인한 user의 profile image 받아오기
+                val currentUsername = it["userName"].toString() // 현재 로그인한 user의 username 받아오기
+                val currentUserProfileImage = it["profileImage"].toString() // 현재 로그인한 user의 profile image 받아오기
 
-                userColRef.whereEqualTo("username",username).get()
+                userColRef.whereEqualTo("userName",username).get()
                     .addOnSuccessListener {
                         for(doc in it){
-                            val followerList = doc["follower"] as MutableMap<String, String> // 팔로우당한 user의 팔로워 목록에
+                            val followerList = doc["followers"] as MutableMap<String, String> // 팔로우당한 user의 팔로워 목록에
                             followerList.put(currentUsername,currentUserProfileImage) // 현재 로그인한 user 추가
 
                             userColRef.document(doc.id)
-                                .update("follower",followerList) // firestore 팔로워 목록 update
+                                .update("followers",followerList) // firestore 팔로워 목록 update
                             userColRef.document(doc.id)
-                                .update("follower count",followerList.size) // firestore 팔로워 수 update
+                                .update("followerCount",followerList.size) // firestore 팔로워 수 update
                         }
                     }
 

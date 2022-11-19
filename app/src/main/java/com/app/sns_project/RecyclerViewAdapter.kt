@@ -118,28 +118,28 @@ class RecyclerViewAdapter(private val viewModel: MyViewModel, val context: Conte
                     userColRef.document(currentUid)
                         .update("following", followingList) // firestore 팔로잉 목록 update
                     userColRef.document(currentUid)
-                        .update("following count", followingList.size) // firestore 팔로잉 수 update
+                        .update("followingCount", followingList.size) // firestore 팔로잉 수 update
 
 
 
-                    val currentUsername = it["username"].toString() // 현재 로그인한 user의 username 받아오기
-                    val currentUserProfileImage = it["profile image"].toString() // 현재 로그인한 user의 profile image 받아오기
+                    val currentUsername = it["userName"].toString() // 현재 로그인한 user의 username 받아오기
+                    val currentUserProfileImage = it["profileImage"].toString() // 현재 로그인한 user의 profile image 받아오기
 
-                    userColRef.whereEqualTo("username",clickedUser.username).get()
+                    userColRef.whereEqualTo("userName",clickedUser.username).get()
                         .addOnSuccessListener {
                             for(doc in it){
-                                val followerList = doc["follower"] as MutableMap<String, String> // 팔로우당한 user의 팔로워 목록에
+                                val followerList = doc["followers"] as MutableMap<String, String> // 팔로우당한 user의 팔로워 목록에
                                 followerList.put(currentUsername,currentUserProfileImage) // 현재 로그인한 user 추가
 
                                 userColRef.document(doc.id)
-                                    .update("follower",followerList) // firestore 팔로워 목록 update
+                                    .update("followers",followerList) // firestore 팔로워 목록 update
                                 userColRef.document(doc.id)
-                                    .update("follower count",followerList.size) // firestore 팔로워 수 update
+                                    .update("followerCount",followerList.size) // firestore 팔로워 수 update
 
                                 // 앱에서 보여지는 현재 로그인한 user의 팔로잉 목록 업데이트
                                 // <issue> <해결됨> follower 탭에서 팔로우시 following탭에 즉시 반영되지 않는(오락가락함) 이슈 있는데
                                 // 일단 notifyDataSetChanged() 호출 문제는 아님. refresh로 호출해주는데도 변화가 없음.
-                                viewModel.addItem2(Item(clickedUser.username,doc["profile image"].toString()))
+                                viewModel.addItem2(Item(clickedUser.username,doc["profileImage"].toString()))
                             }
                         }
 
@@ -152,21 +152,21 @@ class RecyclerViewAdapter(private val viewModel: MyViewModel, val context: Conte
             val clickedUser = viewModel.items[index] // 현재 로그인한 user의 팔로워 목록에서 삭제당한 user
             userColRef.document(currentUid).get()
                 .addOnSuccessListener {
-                    val followerList = it["follower"] as MutableMap<String,String> // 현재 로그인한 user의 팔로워 목록에서
+                    val followerList = it["followers"] as MutableMap<String,String> // 현재 로그인한 user의 팔로워 목록에서
                     followerList.remove(clickedUser.username) // 해당 유저 삭제
 
                     userColRef.document(currentUid)
-                        .update("follower",followerList) // firestore 팔로워 목록 update
+                        .update("followers",followerList) // firestore 팔로워 목록 update
                     userColRef.document(currentUid)
-                        .update("follower count",followerList.size) // firestore 팔로워 수 update
+                        .update("followerCount",followerList.size) // firestore 팔로워 수 update
 
 
 
 
-                    val currentUsername = it["username"].toString() // 현재 로그인한 user의 username 받아오기
+                    val currentUsername = it["userName"].toString() // 현재 로그인한 user의 username 받아오기
 
 
-                    userColRef.whereEqualTo("username",clickedUser.username).get()
+                    userColRef.whereEqualTo("userName",clickedUser.username).get()
                         .addOnSuccessListener {
                             for (doc in it){
                                 val followingList = doc["following"] as MutableMap<String, String> // 삭제당한 user의 팔로잉 목록에서
@@ -175,7 +175,7 @@ class RecyclerViewAdapter(private val viewModel: MyViewModel, val context: Conte
                                 userColRef.document(doc.id)
                                     .update("following",followingList) // firestore 팔로잉 목록 update
                                 userColRef.document(doc.id)
-                                    .update("following count",followingList.size) // firestore 팔로잉 수 update
+                                    .update("followingCount",followingList.size) // firestore 팔로잉 수 update
                             }
                         }
                 }
