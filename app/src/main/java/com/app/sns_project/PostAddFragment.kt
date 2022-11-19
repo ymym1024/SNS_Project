@@ -88,7 +88,9 @@ class PostAddFragment : Fragment() {
         storage = Firebase.storage
         firestore = FirebaseFirestore.getInstance()
 
-        binding.userName.text = "jeong1" //TODO : 합쳤을때 수정
+        firestore.collection("user").document(auth.currentUser?.uid!!).get().addOnSuccessListener {
+            binding.userName.text = it.get("userName").toString()
+        }
 
         textWatcher()
         selectImage()
