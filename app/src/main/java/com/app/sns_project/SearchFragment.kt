@@ -56,7 +56,7 @@ class SearchFragment() : Fragment() {
        // val searchName = arguments?.getString("searchName")
         val args:SearchFragmentArgs by navArgs()
         val searchName = args.searchName
-        searchResultTextView.text =searchName
+        searchResultTextView.text = searchName
 
         if (searchName == "" || searchName == null){
             profileImage.visibility = View.INVISIBLE
@@ -90,11 +90,20 @@ class SearchFragment() : Fragment() {
                                     followingButton.visibility = View.INVISIBLE
                                     followButton.visibility = View.VISIBLE
                                 }
+
+                                userColRef.document(currentUid).get()
+                                    .addOnSuccessListener {
+                                        if (it["userName"].toString() == searchName){
+                                            followButton.visibility = View.INVISIBLE
+                                            followingButton.visibility = View.INVISIBLE
+                                        }
+                                    }
                             }
 
                     }
                 }
         }
+
 
         followButton.setOnClickListener {
             userColRef.whereEqualTo("userName",searchName).get()
@@ -137,7 +146,6 @@ class SearchFragment() : Fragment() {
                                 .update("followerCount",followerList.size) // firestore 팔로워 수 update
                         }
                     }
-
             }
     }
 }
