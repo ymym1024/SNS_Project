@@ -116,12 +116,12 @@ class CommentFragment : Fragment(R.layout.activity_comment) {
             view.findViewById<TextView>(R.id.commentViewComment).text = comments[position].comment
             view.findViewById<TextView>(R.id.commentViewUserID).text = comments[position].userName // userId로 해도됨
 
-            FirebaseFirestore.getInstance().collection("profileImages")
+            FirebaseFirestore.getInstance().collection("user")
                 .document(comments[position].uid!!)
                 .get()
                 .addOnCompleteListener { task ->
                     if(task.isSuccessful) {
-                        var url = task.result!!["image"]
+                        var url = task.result!!["profileImage"]
                         Glide.with(holder.itemView.context).load(url).apply(RequestOptions().circleCrop())
                             .into(view.findViewById(R.id.commentViewProfile))
                     }
