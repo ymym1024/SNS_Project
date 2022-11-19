@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.*
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -50,8 +51,10 @@ class SearchFragment() : Fragment() {
         val followingButton = view.findViewById<ImageButton>(R.id.followingButton)
 
         // bundle 이용
-        val searchName = arguments?.getString("searchName")
-        searchResultTextView.text = searchName
+       // val searchName = arguments?.getString("searchName")
+        val args:SearchFragmentArgs by navArgs()
+        val searchName = args.searchName
+        searchResultTextView.text =searchName
 
         if (searchName == "" || searchName == null){
             profileImage.visibility = View.INVISIBLE
