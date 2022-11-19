@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_mainFragment_to_postUpdateFragment"
             app:destination="@id/postUpdateFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_commentFragment"
+            app:destination="@id/commentFragment" />
     </fragment>
     <fragment
         android:id="@+id/postAddFragment"
@@ -54,9 +57,17 @@
         android:id="@+id/searchFragment"
         android:name="com.app.sns_project.SearchFragment"
         android:label="검색"
-
         tools:layout="@layout/fragment_search" >
         <argument android:name="searchName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentFragment"
+        android:name="com.app.sns_project.CommentFragment"
+        android:label="댓글"
+        tools:layout="@layout/activity_comment">
+        <argument
+            android:name="contentId"
             app:argType="string" />
     </fragment>
 

@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.collection.ArrayMap
 import androidx.collection.arrayMapOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -21,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 
 
 class MainFragment : Fragment() {
@@ -45,8 +47,6 @@ class MainFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         uid = auth.currentUser?.uid!!
 
-        userName = "jeong" //TODO :: 합쳤을때 수정해야함 -> 전역변수로 username을 저장
-        Log.d("user:",FirebaseAuth.getInstance().currentUser?.email!!)
 
         return binding.root
     }
@@ -59,14 +59,13 @@ class MainFragment : Fragment() {
     private fun dataRefresh(){
         setAdapter()
 
-        firestore.collection("user").document(userName).get().addOnSuccessListener {
+        firestore.collection("user").document(uid).get().addOnSuccessListener {
             userFollowingList = it["following"] as HashMap<String,String>
             firestore.collection("post").orderBy("timestamp")?.addSnapshotListener { value, error ->
                 postList.clear()
                 postIdList.clear()
                 if(value == null) return@addSnapshotListener
                 for(post in value!!.documents){
-                    Log.d("item",post.toString())
                     var item = post.toObject(PostDTO::class.java)!!
                     if(userFollowingList.keys?.contains(item.userName)!!) {
                         postList.add(item)
@@ -104,6 +103,7 @@ class MainFragment : Fragment() {
             val postFavoriteCnt : TextView = itemView.findViewById(R.id.post_favorite_cnt)
             val postFavorite : ImageView = itemView.findViewById(R.id.post_favorite)
             val postMenu : Button = itemView.findViewById(R.id.post_menu)
+            val postComment : TextView = itemView.findViewById(R.id.comment_button)
         }
 
         override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
@@ -165,6 +165,12 @@ class MainFragment : Fragment() {
                     }
                     transaction.set(doc, post)
                 }
+            }
+
+            //댓글 상세화면으로 이동
+            holder.postComment.setOnClickListener {
+               // Log.d("postid",postIdList[position])
+              //  findNavController().navigate(MainFragmentDirections.actionMainFragmentToCommentFragment(postIdList[position]))
             }
         }
         override fun getItemCount(): Int {
