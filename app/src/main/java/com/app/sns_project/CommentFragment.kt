@@ -1,15 +1,13 @@
 package com.app.sns_project
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.sns_project.model.ContentDTO
@@ -37,6 +35,7 @@ class CommentFragment : Fragment(R.layout.activity_comment) {
             var comment = ContentDTO.Comment()
             comment.userId = FirebaseAuth.getInstance().currentUser?.email
             comment.uid = FirebaseAuth.getInstance().currentUser?.uid
+            comment.userName = FirebaseAuth.getInstance().currentUser?.displayName // 유저 이름
             val commentEditText = v.findViewById<EditText>(R.id.commentEditText)
             comment.comment = commentEditText.text.toString()
             comment.timestamp = System.currentTimeMillis()
@@ -46,7 +45,33 @@ class CommentFragment : Fragment(R.layout.activity_comment) {
             commentEditText.setText("")
         }
 
+        val userName = v.findViewById<TextView>(R.id.commentViewUserName) // 게시글을 올린 유저의 이름
+        var postUserId: String? = null // 게시글을 올린 유저의 uid
+        var userContent = v.findViewById<TextView>(R.id.my_text) // 게시글 content
+        FirebaseFirestore.getInstance().collection("post").document(contentUid!!)
+            .get().addOnSuccessListener { document ->
+                if (document != null) {
+                    userName.text = document.get("userName").toString() // 유저의 이름을 기입
+                    postUserId = document.get("uid").toString()
+                    userContent.text = document.get("content").toString() // 게시물의 content 기입
+                    //Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
+            }
 
+        val userProfile = v.findViewById<ImageView>(R.id.postViewProfile) // 게시글을 올린 유저의 프로필
+        FirebaseFirestore.getInstance().collection("user").document(postUserId!!).get()
+            .addOnSuccessListener { document ->
+                if(document != null) {
+                    var url = document.get("profileImage")
+                    Glide.with(this).load(url).apply(RequestOptions().circleCrop())
+                        .into(userProfile)
+                }
+            }
 
         return v
     }
@@ -58,7 +83,7 @@ class CommentFragment : Fragment(R.layout.activity_comment) {
 
     inner class CommentRecyclerviewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-        val deleteButton = v.findViewById<ImageButton>(R.id.deleteButton)
+        private val deleteButton: ImageButton = v.findViewById<ImageButton>(R.id.deleteButton)
 
         var comments : ArrayList<ContentDTO.Comment> = arrayListOf() // comment 를 담을 ArrayList
         init {
@@ -88,7 +113,7 @@ class CommentFragment : Fragment(R.layout.activity_comment) {
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             var view = holder.itemView
             view.findViewById<TextView>(R.id.commentViewComment).text = comments[position].comment
-            view.findViewById<TextView>(R.id.commentViewUserID).text = comments[position].userId
+            view.findViewById<TextView>(R.id.commentViewUserID).text = comments[position].userName // userId로 해도됨
 
             FirebaseFirestore.getInstance().collection("profileImages")
                 .document(comments[position].uid!!)

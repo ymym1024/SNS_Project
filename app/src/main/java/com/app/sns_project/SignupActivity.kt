@@ -9,8 +9,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 
 class SignupActivity : AppCompatActivity() {
@@ -34,7 +36,7 @@ class SignupActivity : AppCompatActivity() {
                 }
 
                 if(userPassword.equals(userPasswordConfirm)) {
-                    doSignup(userEmail, userPassword)
+                    doSignup(userEmail, userPassword, userName)
                 }
                 else {
                     Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
@@ -52,11 +54,23 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun doSignup(userEmail: String, password: String) {
+    private fun doSignup(userEmail: String, password: String, userName: String) {
         Firebase.auth.createUserWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this) {
                 if (it.isSuccessful) {
                     Toast.makeText(this, "회원가입 성공!!", Toast.LENGTH_SHORT).show()
+                    val itemMap = hashMapOf(
+                        "userName" to userName,
+                        "followerCount" to 0,
+                        "followingCount" to 0,
+                        "profileImage" to "gs://snsproject-638d2.appspot.com/images/profile_images/jeong1.jpeg"
+                    )
+                    FirebaseFirestore.getInstance().collection("user")
+                        .document(FirebaseAuth.getInstance().currentUser?.uid.toString())
+                        .set(itemMap) // 입력받은 유저의 이름을 등록.
+                        .addOnSuccessListener {
+                            println("add user")
+                        }
                     //updateProfile()
                     startActivity(
                         Intent(this, LoginActivity::class.java))

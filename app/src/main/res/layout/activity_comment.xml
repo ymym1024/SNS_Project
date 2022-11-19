@@ -7,28 +7,52 @@
     tools:context=".CommentActivity">
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        android:id="@+id/linear"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp">-->
+<!--        <ImageView-->
+<!--            android:id="@+id/commentViewProfile"-->
+<!--            android:layout_margin="7dp"-->
+<!--            android:layout_width="35dp"-->
+<!--            android:layout_height="35dp">-->
+<!--        </ImageView>-->
+<!--        <TextView-->
+<!--            android:id="@+id/commentViewUserName"-->
+<!--            android:text="UserID"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_margin="7dp"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content">-->
+
+<!--        </TextView>-->
+<!--    </LinearLayout>-->
+    <LinearLayout
+        android:id="@+id/linear"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="50dp">
         <ImageView
-            android:id="@+id/commentViewProfile"
+            android:id="@+id/postViewProfile"
             android:layout_margin="7dp"
             android:layout_width="35dp"
             android:layout_height="35dp">
         </ImageView>
         <TextView
-            android:id="@+id/commentViewUserID"
-            android:text="UserID"
+            android:id="@+id/commentViewUserName"
+            android:text="UserName"
             android:textStyle="bold"
             android:layout_margin="7dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
         </TextView>
+
     </LinearLayout>
     <ImageView
         android:id="@+id/my_img"
+        android:layout_below="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="300dp">
 
@@ -36,9 +60,9 @@
 
     <TextView
         android:id="@+id/my_text"
-        android:layout_below="@+id/my_img"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="80dp"
+        android:layout_below="@+id/my_img">
 
     </TextView>
 
