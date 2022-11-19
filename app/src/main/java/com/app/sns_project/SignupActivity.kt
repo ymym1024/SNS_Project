@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.app.sns_project.model.ContentDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
@@ -59,15 +60,24 @@ class SignupActivity : AppCompatActivity() {
             .addOnCompleteListener(this) {
                 if (it.isSuccessful) {
                     Toast.makeText(this, "회원가입 성공!!", Toast.LENGTH_SHORT).show()
-                    val itemMap = hashMapOf(
-                        "userName" to userName,
-                        "followerCount" to 0,
-                        "followingCount" to 0,
-                        "profileImage" to "gs://snsproject-638d2.appspot.com/images/profile_images/jeong1.jpeg"
+//                    val itemMap = hashMapOf(
+//                        "userName" to userName,
+//                        "followerCount" to 0,
+//                        "followingCount" to 0,
+//                        "profileImage" to "gs://snsproject-638d2.appspot.com/images/profile_images/jeong1.jpeg"
+//                    )
+                    var userInfo = ContentDTO.UserInfo(
+                        followerCount = 0,
+                        followingCount = 0,
+                        userName = userName,
+                        profileImage = "gs://snsproject-638d2.appspot.com/images/profile_images/jeong1.jpeg",
+                        followers = HashMap(),
+                        following = HashMap()
                     )
+
                     FirebaseFirestore.getInstance().collection("user")
                         .document(FirebaseAuth.getInstance().currentUser?.uid.toString())
-                        .set(itemMap) // 입력받은 유저의 이름을 등록.
+                        .set(userInfo) // 입력받은 유저의 이름을 등록.
                         .addOnSuccessListener {
                             println("add user")
                         }
