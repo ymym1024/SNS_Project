@@ -133,7 +133,7 @@ class MainFragment : Fragment() {
             }else{
                 holder.postFavoriteCnt.text = ""
             }
-            if(!holder.postUser.text.equals(auth.currentUser?.email)) {
+            if(!itemList[position].uid.equals(auth.currentUser?.uid)) {
                 holder.postMenu.visibility = View.INVISIBLE
             }
 
@@ -169,8 +169,8 @@ class MainFragment : Fragment() {
 
             //댓글 상세화면으로 이동
             holder.postComment.setOnClickListener {
-               // Log.d("postid",postIdList[position])
-              //  findNavController().navigate(MainFragmentDirections.actionMainFragmentToCommentFragment(postIdList[position]))
+                Log.d("postid",postIdList[position])
+               findNavController().navigate(MainFragmentDirections.actionMainFragmentToCommentFragment(postIdList[position]))
             }
         }
         override fun getItemCount(): Int {
