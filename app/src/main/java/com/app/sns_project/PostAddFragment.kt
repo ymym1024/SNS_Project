@@ -129,7 +129,7 @@ class PostAddFragment : Fragment() {
                     Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
                 }
             }else{
-                post.imageUrl = arrayListOf()
+                //post.imageUrl = arrayListOf()
                 firestore?.collection("post").add(post).addOnSuccessListener {
                     binding.progressBar.visibility = View.GONE
                     Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()

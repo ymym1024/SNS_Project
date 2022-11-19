@@ -56,35 +56,27 @@ class MainFragment : Fragment() {
     }
 
     private fun dataRefresh(){
-        postList.clear()
-        postIdList.clear()
-
         setAdapter()
+
         firestore.collection("user").document(userName).get().addOnSuccessListener {
-            val followingList = it["following"] as HashMap<String,String>
-            for(follow in followingList.keys){
-                val value = followingList.get(follow) as String
-                userFollowingList.put(follow,value)
-                firestore.collection("post").whereEqualTo("userName",follow).get().addOnSuccessListener { result->
-                for (doc in result) {
-                        val post = doc.toObject(PostDTO::class.java)
-                        postIdList.add(doc.id) // post id 추가
-                        postList.add(post)
+            userFollowingList = it["following"] as HashMap<String,String>
+            firestore.collection("post").orderBy("timestamp")?.addSnapshotListener { value, error ->
+                postList.clear()
+                postIdList.clear()
+                if(value == null) return@addSnapshotListener
+                for(post in value!!.documents){
+                    Log.d("item",post.toString())
+                    var item = post.toObject(PostDTO::class.java)!!
+                    if(userFollowingList.keys?.contains(item.userName)!!) {
+                        postList.add(item)
+                        postIdList.add(post.id)
                     }
-                    mAdapter.notifyDataSetChanged()
                 }
+                mAdapter.notifyDataSetChanged()
             }
+
         }
-//        collectionRef.get().addOnSuccessListener { result ->
-//            postList.clear()
-//            for (item in result) {
-//                val post = item.toObject(PostDTO::class.java)
-//                postIdList.add(item.id) // post id 추가
-//                postList.add(post)
-//            }
-//            setAdapter()
-//            mAdapter.notifyDataSetChanged()
-//        }
+
     }
 
     private fun setAdapter(){
@@ -137,6 +129,8 @@ class MainFragment : Fragment() {
 
             if(itemList[position].favoriteCount>0){
                 holder.postFavoriteCnt.text = "${itemList[position].favoriteCount}명이 좋아합니다."
+            }else{
+                holder.postFavoriteCnt.text = ""
             }
             if(!holder.postUser.text.equals(auth.currentUser?.email)) {
                 holder.postMenu.visibility = View.INVISIBLE
@@ -169,8 +163,6 @@ class MainFragment : Fragment() {
                         post.favorites[uid] = true //사용자 추가
                     }
                     transaction.set(doc, post)
-                }.addOnSuccessListener {
-                    holder.postFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
                 }
             }
         }
@@ -180,10 +172,6 @@ class MainFragment : Fragment() {
 
         override fun getItemViewType(position: Int): Int {
             return position
-        }
-
-        private fun clickFavorite(position:Int){
-
         }
 
         private fun convertTimestampToDate(time: Long?): String {
