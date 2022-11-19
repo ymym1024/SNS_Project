@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+    <ImageView
+        android:id="@+id/commentViewProfile"
+        android:layout_margin="7dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp">
+    </ImageView>
+    <TextView
+        android:id="@+id/commentViewUserID"
+        android:text="UserID"
+        android:textStyle="bold"
+        android:layout_margin="7dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </TextView>
+    <TextView
+        android:id="@+id/commentViewComment"
+        android:layout_margin="7dp"
+        android:text="Comment Message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="7dp"
+        android:src="@drawable/delete_button"
+        android:scaleType="center"
+        android:text="delete"></ImageButton>
+</LinearLayout>
