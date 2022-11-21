@@ -17,7 +17,7 @@
         android:icon="@drawable/ic_chat_icon"
         android:title="채팅"/>
     <item
-        android:id="@+id/ProfileFragment"
+        android:id="@+id/profileFragment"
         android:icon="@drawable/ic_profile_icon"
         android:title="계정"/>
 </menu>

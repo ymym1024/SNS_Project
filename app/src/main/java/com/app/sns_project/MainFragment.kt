@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.collection.ArrayMap
-import androidx.collection.arrayMapOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,9 +18,9 @@ import com.app.sns_project.databinding.FragmentMainBinding
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 
 
 class MainFragment : Fragment() {
@@ -30,13 +28,14 @@ class MainFragment : Fragment() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private var uid = ""
-    private var userName = ""
 
     private var postList : ArrayList<PostDTO> = arrayListOf()
     private var postIdList : ArrayList<String> = arrayListOf()
     private var userFollowingList = HashMap<String,String>()
 
     private lateinit var mAdapter : RecyclerViewAdapter
+
+    var postSnapshot  : ListenerRegistration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,12 +55,16 @@ class MainFragment : Fragment() {
         dataRefresh()
     }
 
+    override fun onStop() {
+        super.onStop()
+        postSnapshot!!.remove()
+    }
     private fun dataRefresh(){
         setAdapter()
 
         firestore.collection("user").document(uid).get().addOnSuccessListener {
             userFollowingList = it["following"] as HashMap<String,String>
-            firestore.collection("post").orderBy("timestamp")?.addSnapshotListener { value, error ->
+            postSnapshot = firestore.collection("post").orderBy("timestamp")?.addSnapshotListener { value, error ->
                 postList.clear()
                 postIdList.clear()
                 if(value == null) return@addSnapshotListener
@@ -95,7 +98,7 @@ class MainFragment : Fragment() {
         inner class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val postUser : TextView = itemView.findViewById(R.id.post_user)
             val userName : TextView = itemView.findViewById(R.id.user_name)
-            val userImage : ImageView = itemView.findViewById(R.id.user_image)
+            val userImage : ImageView = itemView.findViewById(R.id.user_image_imageView)
             val postContent : TextView = itemView.findViewById(R.id.post_content)
             val postTime : TextView = itemView.findViewById(R.id.post_time)
             val postImageList : ViewPager2 = itemView.findViewById(R.id.post_image)

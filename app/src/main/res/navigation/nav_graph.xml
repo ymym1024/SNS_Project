@@ -69,6 +69,11 @@
             android:name="contentId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.app.sns_project.ProfileFragment"
+        android:label="프로필"
+        tools:layout="@layout/fragment_profile" />
 
 
 </navigation>
