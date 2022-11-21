@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.app.sns_project.MainFragment"
+        android:name="com.app.sns_project.fragment.MainFragment"
         android:label="홈"
         tools:layout="@layout/fragment_main" >
         <action
@@ -19,12 +19,15 @@
     </fragment>
     <fragment
         android:id="@+id/postAddFragment"
-        android:name="com.app.sns_project.PostAddFragment"
+        android:name="com.app.sns_project.fragment.PostAddFragment"
         android:label="새 게시물"
         tools:layout="@layout/fragment_post_add" >
         <action
             android:id="@+id/action_postAddFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_postAddFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
     <dialog
         android:id="@+id/bottomSheetFragment"
@@ -33,7 +36,7 @@
         tools:layout="@layout/fragment_bottom_sheet" />
     <fragment
         android:id="@+id/postUpdateFragment"
-        android:name="com.app.sns_project.PostUpdateFragment"
+        android:name="com.app.sns_project.fragment.PostUpdateFragment"
         android:label="게시물 수정"
         tools:layout="@layout/fragment_post_update">
         <argument
@@ -42,6 +45,9 @@
         <action
             android:id="@+id/action_postUpdateFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_postUpdateFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
 
     <fragment
@@ -71,9 +77,24 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.app.sns_project.ProfileFragment"
+        android:name="com.app.sns_project.fragment.ProfileFragment"
         android:label="프로필"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.app.sns_project.fragment.DetailFragment"
+        android:label="DetailFragment" >
+        <argument
+            android:name="postId"
+            app:argType="string" />
+        <argument
+            android:name="postUser"
+            app:argType="string" />
+    </fragment>
 
 
 </navigation>

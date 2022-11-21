@@ -1,4 +1,4 @@
-package com.app.sns_project
+package com.app.sns_project.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.app.sns_project.BottomSheetFragment
 import com.app.sns_project.DTO.PostDTO
+import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentMainBinding
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -191,20 +193,20 @@ class MainFragment : Fragment() {
         }
     }
 
+}
+class ImageViewPager2(private var list: List<String>?): RecyclerView.Adapter<ImageViewPager2.ViewHolder>(){
 
-    inner class ImageViewPager2(private var list: List<String>?): RecyclerView.Adapter<ImageViewPager2.ViewHolder>(){
-
-        inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-            val Image : ImageView = view.findViewById(R.id.pagerImage)
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_pager_item, parent, false))
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            Glide.with(holder.Image.context).load(list?.get(position)!!).into(holder.Image)
-        }
-
-        override fun getItemCount(): Int = list!!.size
+    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        val Image : ImageView = view.findViewById(R.id.pagerImage)
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(
+        R.layout.layout_pager_item, parent, false))
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Glide.with(holder.Image.context).load(list?.get(position)!!).into(holder.Image)
+    }
+
+    override fun getItemCount(): Int = list!!.size
 }
 

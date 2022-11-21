@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.databinding.FragmentBottomSheetBinding
+import com.app.sns_project.fragment.MainFragmentDirections
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -33,7 +34,6 @@ class BottomSheetFragment(val postId:String) : BottomSheetDialogFragment() {
 
         //수정하기 버튼
         binding.postUpdate.setOnClickListener {
-           // findNavController().navigate(R.id.action_mainFragment_to_postUpdateFragment)
             findNavController().navigate(MainFragmentDirections.actionMainFragmentToPostUpdateFragment(postId))
             dismiss()
         }

@@ -1,30 +1,33 @@
-package com.app.sns_project
+package com.app.sns_project.fragment
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.DTO.UserDTO
-import com.app.sns_project.databinding.FragmentPostAddBinding
+import com.app.sns_project.ItemPagerAdapter
 import com.app.sns_project.databinding.FragmentProfileBinding
-import com.app.sns_project.model.ContentDTO
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.storage.FirebaseStorage
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
 
     private lateinit var auth:FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
-    private var userName = ""
+
+    private val postIdList : ArrayList<String> = ArrayList()
 
     var profileListener : ListenerRegistration?=null
     var followingListener : ListenerRegistration?=null
@@ -50,23 +53,19 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getPostImage(){
-        val contentImageDTO : ArrayList<String> = ArrayList()
         val contentDTO : ArrayList<PostDTO> = ArrayList()
+
         postListener = firestore?.collection("post").whereEqualTo("uid",auth.currentUser?.uid!!).addSnapshotListener { value, error ->
-            contentImageDTO.clear()
+            contentDTO.clear()
 
             if (value == null) return@addSnapshotListener
             for (v in value?.documents!!) {
                 val data = v.toObject(PostDTO::class.java)!!
                 contentDTO.add(data)
-                if(data.imageUrl!!.size>1){
-                    contentImageDTO.add(data.imageUrl?.get(0).toString()) // 무조건 첫번째 화면만
-                }else{
-                    contentImageDTO.add("")
-                }
+                postIdList.add(v.id)
             }
             binding.userPostTextview.text = contentDTO.size.toString()
-            binding.imageRecylcerview.adapter = ItemPagerAdapter(requireActivity(),contentImageDTO)
+            binding.imageRecylcerview.adapter = GridImageRecyclerViewAdatper(requireActivity(),contentDTO)
             binding.imageRecylcerview.layoutManager = GridLayoutManager(context,3)
         }
     }
@@ -104,5 +103,58 @@ class ProfileFragment : Fragment() {
         followingListener!!.remove()
         profileListener!!.remove()
         postListener!!.remove()
+    }
+
+
+    inner class GridImageRecyclerViewAdatper(val context: Context,val content:ArrayList<PostDTO>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+
+            //현재 사이즈 뷰 화면 크기의 가로 크기의 1/3값을 가지고 오기
+            val width = resources.displayMetrics.widthPixels / 3
+
+            val imageView = ImageView(parent.context)
+            imageView.layoutParams = LinearLayoutCompat.LayoutParams(width, width)
+
+            return CustomViewHolder(imageView)
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+            var imageView = (holder as CustomViewHolder).imageView
+            var image :String
+
+            if(content[position].imageUrl!!.isEmpty()){
+                image = ""
+            }else{
+                image = content[position].imageUrl!!.get(0)
+            }
+            Glide.with(holder.itemView.context)
+                .load(image)
+                .apply(RequestOptions().centerCrop())
+                .into(imageView)
+
+            imageView.setOnClickListener {
+
+                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToDetailFragment(postIdList[position],content[position].uid.toString()))
+
+//                val fragment = UserFragment()
+//                val bundle = Bundle()
+//
+//                bundle.putString("destinationUid", contentDTOs[position].uid)
+//                bundle.putString("userId", contentDTOs[position].userId)
+//
+//                fragment.arguments = bundle
+//                activity!!.supportFragmentManager.beginTransaction()
+//                    .replace(R.id.main_content, fragment)
+//                    .commit()
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return content.size
+        }
+
+        inner class CustomViewHolder(var imageView: ImageView) : RecyclerView.ViewHolder(imageView)
     }
 }

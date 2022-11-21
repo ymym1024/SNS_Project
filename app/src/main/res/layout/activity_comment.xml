@@ -50,11 +50,12 @@
         </TextView>
 
     </LinearLayout>
+
     <ImageView
         android:id="@+id/my_img"
-        android:layout_below="@+id/linear"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="300dp"
+        android:layout_below="@+id/linear">
 
     </ImageView>
 
@@ -91,13 +92,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </Button>
+
     <EditText
         android:id="@+id/commentEditText"
-        android:layout_toLeftOf="@+id/commentSendButton"
-        android:layout_below="@+id/commentRecyclerview"
-        android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </EditText>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/commentRecyclerview"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toLeftOf="@+id/commentSendButton"></EditText>
 
 </RelativeLayout>
