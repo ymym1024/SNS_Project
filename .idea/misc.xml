@@ -11,8 +11,10 @@
         <entry key="app/src/main/res/drawable/ic_baseline_delete_outline_24.xml" value="0.139" />
         <entry key="app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.137" />
         <entry key="app/src/main/res/drawable/ic_baseline_favorite_border_24.xml" value="0.2445" />
+        <entry key="app/src/main/res/drawable/ic_baseline_notifications_none_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_chat_icon.xml" value="0.117" />
         <entry key="app/src/main/res/drawable/ic_group.xml" value="0.117" />
+        <entry key="app/src/main/res/drawable/ic_group_icon.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_home_icon.xml" value="0.117" />
         <entry key="app/src/main/res/drawable/ic_profile_icon.xml" value="0.117" />
         <entry key="app/src/main/res/drawable/menu_select_color.xml" value="0.117" />

@@ -13,10 +13,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.app.sns_project.BottomSheetFragment
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentMainBinding
+import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -48,7 +48,7 @@ class MainFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         uid = auth.currentUser?.uid!!
 
-
+        //사용자 정보 저장
         return binding.root
     }
 
@@ -59,27 +59,33 @@ class MainFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        postSnapshot!!.remove()
+        if(postSnapshot!=null){
+            postSnapshot!!.remove()
+        }
     }
     private fun dataRefresh(){
         setAdapter()
 
-        firestore.collection("user").document(uid).get().addOnSuccessListener {
-            userFollowingList = it["following"] as HashMap<String,String>
-            postSnapshot = firestore.collection("post").orderBy("timestamp")?.addSnapshotListener { value, error ->
-                postList.clear()
-                postIdList.clear()
-                if(value == null) return@addSnapshotListener
-                for(post in value!!.documents){
-                    var item = post.toObject(PostDTO::class.java)!!
-                    if(userFollowingList.keys?.contains(item.userName)!!) {
-                        postList.add(item)
-                        postIdList.add(post.id)
+        firestore.collection("user").document(uid).get().addOnCompleteListener { task ->
+            if(task.isSuccessful){
+                val list = task.result["following"]
+                if(list!=null){
+                    userFollowingList = list as HashMap<String,String>
+                    postSnapshot = firestore.collection("post").orderBy("timestamp")?.addSnapshotListener { value, error ->
+                        postList.clear()
+                        postIdList.clear()
+                        if(value == null) return@addSnapshotListener
+                        for(post in value!!.documents){
+                            var item = post.toObject(PostDTO::class.java)!!
+                            if(userFollowingList.keys?.contains(item.userName)!!) {
+                                postList.add(item)
+                                postIdList.add(post.id)
+                            }
+                        }
+                        mAdapter.notifyDataSetChanged()
                     }
                 }
-                mAdapter.notifyDataSetChanged()
             }
-
         }
 
     }
@@ -142,11 +148,6 @@ class MainFragment : Fragment() {
                 holder.postMenu.visibility = View.INVISIBLE
             }
 
-            holder.postMenu.setOnClickListener {
-                //수정, 삭제 보여주기
-                BottomSheetFragment(postIdList[position]).show(parentFragmentManager,"PostMenu")
-            }
-
             //좋아요 버튼 상태값 변경
             if(itemList[position].favorites.containsKey(uid)){
                 holder.postFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
@@ -167,6 +168,7 @@ class MainFragment : Fragment() {
                     } else {
                         post.favoriteCount = post?.favoriteCount + 1
                         post.favorites[uid] = true //사용자 추가
+                        alarmFavorite(post.uid!!)
                     }
                     transaction.set(doc, post)
                 }
@@ -174,7 +176,6 @@ class MainFragment : Fragment() {
 
             //댓글 상세화면으로 이동
             holder.postComment.setOnClickListener {
-                Log.d("postid",postIdList[position])
                findNavController().navigate(MainFragmentDirections.actionMainFragmentToCommentFragment(postIdList[position]))
             }
         }
@@ -190,6 +191,16 @@ class MainFragment : Fragment() {
             val sdf = SimpleDateFormat("yyyy.MM.dd HH:mm")
             val date = sdf.format(time).toString()
             return date
+        }
+
+        private fun alarmFavorite(postUseruid:String){
+            firestore.collection("user").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
+                val userName = it["userName"] as String
+
+                Log.d("userName",userName)
+                var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
+                pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
+            }
         }
     }
 

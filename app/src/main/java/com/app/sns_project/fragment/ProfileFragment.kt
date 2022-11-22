@@ -99,10 +99,18 @@ class ProfileFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        followerListener!!.remove()
-        followingListener!!.remove()
-        profileListener!!.remove()
-        postListener!!.remove()
+        if(followerListener!=null){
+            followerListener!!.remove()
+        }
+        if(followingListener!=null){
+            followingListener!!.remove()
+        }
+        if(profileListener!=null){
+            profileListener!!.remove()
+        }
+        if(postListener!=null){
+            postListener!!.remove()
+        }
     }
 
 
@@ -137,17 +145,6 @@ class ProfileFragment : Fragment() {
             imageView.setOnClickListener {
 
                 findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToDetailFragment(postIdList[position],content[position].uid.toString()))
-
-//                val fragment = UserFragment()
-//                val bundle = Bundle()
-//
-//                bundle.putString("destinationUid", contentDTOs[position].uid)
-//                bundle.putString("userId", contentDTOs[position].userId)
-//
-//                fragment.arguments = bundle
-//                activity!!.supportFragmentManager.beginTransaction()
-//                    .replace(R.id.main_content, fragment)
-//                    .commit()
             }
         }
 

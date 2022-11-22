@@ -1,28 +1,27 @@
-package com.app.sns_project
+package com.app.sns_project.fragment
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.app.sns_project.DTO.PostDTO
+import androidx.navigation.fragment.navArgs
 import com.app.sns_project.databinding.FragmentBottomSheetBinding
-import com.app.sns_project.fragment.MainFragmentDirections
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 
-class BottomSheetFragment(val postId:String) : BottomSheetDialogFragment() {
+class BottomSheetFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentBottomSheetBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+    var postId = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,11 +29,16 @@ class BottomSheetFragment(val postId:String) : BottomSheetDialogFragment() {
     ): View? {
         _binding = FragmentBottomSheetBinding.inflate(inflater,container,false)
 
+        val args:BottomSheetFragmentArgs by navArgs()
+        postId = args.postId
+
         firestore = FirebaseFirestore.getInstance()
+        auth= FirebaseAuth.getInstance()
 
         //수정하기 버튼
         binding.postUpdate.setOnClickListener {
-            findNavController().navigate(MainFragmentDirections.actionMainFragmentToPostUpdateFragment(postId))
+
+            findNavController().navigate(BottomSheetFragmentDirections.actionBottomSheetFragmentToPostUpdateFragment(postId))
             dismiss()
         }
 
