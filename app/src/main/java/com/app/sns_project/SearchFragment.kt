@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.*
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -52,7 +53,9 @@ class SearchFragment() : Fragment() {
         val followingButton = view.findViewById<ImageButton>(R.id.followingButton)
 
         // bundle 이용
-        val searchName = arguments?.getString("searchName")
+       // val searchName = arguments?.getString("searchName")
+        val args:SearchFragmentArgs by navArgs()
+        val searchName = args.searchName
         searchResultTextView.text = searchName
 
         if (searchName == "" || searchName == null){
@@ -87,11 +90,20 @@ class SearchFragment() : Fragment() {
                                     followingButton.visibility = View.INVISIBLE
                                     followButton.visibility = View.VISIBLE
                                 }
+
+                                userColRef.document(currentUid).get()
+                                    .addOnSuccessListener {
+                                        if (it["userName"].toString() == searchName){
+                                            followButton.visibility = View.INVISIBLE
+                                            followingButton.visibility = View.INVISIBLE
+                                        }
+                                    }
                             }
 
                     }
                 }
         }
+
 
         followButton.setOnClickListener {
             userColRef.whereEqualTo("userName",searchName).get()
@@ -134,7 +146,6 @@ class SearchFragment() : Fragment() {
                                 .update("followerCount",followerList.size) // firestore 팔로워 수 update
                         }
                     }
-
             }
     }
 }

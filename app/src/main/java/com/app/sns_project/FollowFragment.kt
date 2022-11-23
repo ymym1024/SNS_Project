@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -91,17 +92,19 @@ class FollowFragment : Fragment() {
             }
             else{
                 // bundle 이용
-                val bundle = Bundle()
-                bundle.putString("searchName",editTextSearchResult)
-                val searchFragment = SearchFragment()
-                searchFragment.arguments = bundle
-//                Log.e("arguements check:",searchFragment.arguments?.getString("searchName").toString())
-
-                parentFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    replace(R.id.nav_host_fragment, searchFragment, null)
-                    addToBackStack(null)
-                }
+//                val bundle = Bundle()
+//                bundle.putString("searchName",editTextSearchResult)
+//                val searchFragment = SearchFragment()
+//                searchFragment.arguments = bundle
+////                Log.e("arguements check:",searchFragment.arguments?.getString("searchName").toString())
+//
+//                parentFragmentManager.commit {
+//                    setReorderingAllowed(true)
+//                    replace(R.id.nav_host_fragment, searchFragment, null)
+//                    addToBackStack(null)
+//                }
+                val searchName = editTextSearchResult
+                findNavController().navigate(FollowFragmentDirections.actionFollowFragmentToSearchFragment(searchName))
             }
 
         }

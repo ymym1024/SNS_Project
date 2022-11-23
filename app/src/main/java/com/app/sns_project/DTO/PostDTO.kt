@@ -5,7 +5,7 @@ data class PostDTO(
     var userName:String?=null,
     var content : String?=null,
     var timestamp : Long?=null,
-    val imageUrl : List<String>? = arrayListOf(),
+    var imageUrl : List<String>? = arrayListOf(),
     var favoriteCount:Int = 0,
     var favorites : HashMap<String,Boolean> = HashMap()
 ){

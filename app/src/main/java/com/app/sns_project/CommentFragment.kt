@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.sns_project.model.ContentDTO
@@ -17,7 +18,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CommentFragment : Fragment(R.layout.activity_comment) {
-    var contentUid : String? = null
+
+    var contentUid : String? = ""
     var ab = null;
     lateinit var v : View
 
@@ -26,6 +28,9 @@ class CommentFragment : Fragment(R.layout.activity_comment) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val args:CommentFragmentArgs by navArgs()
+        contentUid = args.contentId
+
         v = inflater.inflate(R.layout.activity_comment, container, false)
         val commentRecyclerView = v.findViewById<RecyclerView>(R.id.commentRecyclerview)
         commentRecyclerView.adapter  = CommentFragment().CommentRecyclerviewAdapter()
@@ -79,7 +84,6 @@ class CommentFragment : Fragment(R.layout.activity_comment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        contentUid = null // contentUid 값을 가져온다.
     }
 
     inner class CommentRecyclerviewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -116,12 +120,12 @@ class CommentFragment : Fragment(R.layout.activity_comment) {
             view.findViewById<TextView>(R.id.commentViewComment).text = comments[position].comment
             view.findViewById<TextView>(R.id.commentViewUserID).text = comments[position].userName // userId로 해도됨
 
-            FirebaseFirestore.getInstance().collection("profileImages")
+            FirebaseFirestore.getInstance().collection("user")
                 .document(comments[position].uid!!)
                 .get()
                 .addOnCompleteListener { task ->
                     if(task.isSuccessful) {
-                        var url = task.result!!["image"]
+                        var url = task.result!!["profileImage"]
                         Glide.with(holder.itemView.context).load(url).apply(RequestOptions().circleCrop())
                             .into(view.findViewById(R.id.commentViewProfile))
                     }

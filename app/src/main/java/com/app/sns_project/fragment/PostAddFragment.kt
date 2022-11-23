@@ -1,4 +1,4 @@
-package com.app.sns_project
+package com.app.sns_project.fragment
 
 import android.Manifest
 import android.app.Activity
@@ -19,19 +19,19 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.app.sns_project.DTO.PostDTO
+import com.app.sns_project.ItemPagerAdapter
+import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentPostAddBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.tasks.await
 import java.io.File
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -88,7 +88,9 @@ class PostAddFragment : Fragment() {
         storage = Firebase.storage
         firestore = FirebaseFirestore.getInstance()
 
-        binding.userName.text = "jeong1" //TODO : 합쳤을때 수정
+        firestore.collection("user").document(auth.currentUser?.uid!!).get().addOnSuccessListener {
+            binding.userName.text = it.get("userName").toString()
+        }
 
         textWatcher()
         selectImage()
@@ -126,19 +128,29 @@ class PostAddFragment : Fragment() {
                     postId = it.id
                     uploadImageAll()
                 }.addOnFailureListener {
-                    Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
+                    saveFail()
                 }
             }else{
                 //post.imageUrl = arrayListOf()
                 firestore?.collection("post").add(post).addOnSuccessListener {
-                    binding.progressBar.visibility = View.GONE
-                    Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
+                    postId = it.id
+                    saveSuccess(postId)
                 }.addOnFailureListener {
-                    binding.progressBar.visibility = View.GONE
-                    Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
+                    saveFail()
                 }
             }
         }
+    }
+
+    private fun saveSuccess(postId:String){
+        binding.progressBar.visibility = View.GONE
+        Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
+        findNavController().navigate(PostAddFragmentDirections.actionPostAddFragmentToDetailFragment(postId,auth.currentUser!!.uid))
+    }
+
+    private fun saveFail(){
+        binding.progressBar.visibility = View.GONE
+        Snackbar.make(binding.root, "등록이 실패했습니다. 네트워크를 확인해주세요", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun uploadImageAll(){
@@ -154,13 +166,11 @@ class PostAddFragment : Fragment() {
                     val imageUri = uri.toString()
                     saveImageList.add(imageUri)
                     firestore.collection("post").document(postId).update("imageUrl",saveImageList).addOnSuccessListener {
-                        binding.progressBar.visibility = View.GONE
                         if(i==list.size-1){
-                            Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
+                            saveSuccess(postId)
                         }
                     }.addOnFailureListener {
-                        binding.progressBar.visibility = View.GONE
-                        Snackbar.make(binding.root, "이미지 등록에 실패했습니다.", Snackbar.LENGTH_SHORT).show()
+                        saveFail()
                     }
                 }
             }
@@ -198,7 +208,8 @@ class PostAddFragment : Fragment() {
             if(readPermission == PackageManager.PERMISSION_DENIED){
                 ActivityCompat.requestPermissions(requireActivity(), arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE),
-                    REQ_GALLERY)
+                    REQ_GALLERY
+                )
             }else{
                 showGallery()
             }
@@ -206,7 +217,7 @@ class PostAddFragment : Fragment() {
     }
 
     private fun setAdapater(list:ArrayList<String>){
-        val adapter = ItemPagerAdapter(requireActivity(),list)
+        val adapter = ItemPagerAdapter(requireActivity(),list,2)
         binding.imageList.adapter = adapter
         val gridLayoutManager = GridLayoutManager(context,2)
         binding.imageList.layoutManager = gridLayoutManager
