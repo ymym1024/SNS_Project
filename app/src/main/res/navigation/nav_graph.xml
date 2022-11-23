@@ -70,6 +70,23 @@
             android:name="contentId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/ChatFragment"
+        android:name="com.app.sns_project.ChatFragment"
+        android:label="채팅"
+        tools:layout="@layout/fragment_chat" >
+        <action
+            android:id="@+id/action_ChatFragment_to_ChatRoomFragment"
+            app:destination="@id/ChatRoomFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ChatRoomFragment"
+        android:name="com.app.sns_project.ChatRoomFragment"
+        android:label="채팅방"
+        tools:layout="@layout/fragment_chatroom" >
+        <argument android:name="chatUserName"
+            app:argType="string" />
+    </fragment>
 
 
 </navigation>

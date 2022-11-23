@@ -17,7 +17,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
 
-
 class SearchFragment() : Fragment() {
     private val viewModel by viewModels<MyViewModel>()
 
