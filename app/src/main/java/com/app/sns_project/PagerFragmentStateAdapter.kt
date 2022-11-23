@@ -25,8 +25,4 @@ class PagerFragmentStateAdapter(fragmentActivity: FragmentActivity) : FragmentSt
         notifyItemChanged(index)
     }
 
-//    fun removeFragment(){
-//        fragments.removeLast()
-//        notifyItemRemoved(fragments.size)
-//    }
 }

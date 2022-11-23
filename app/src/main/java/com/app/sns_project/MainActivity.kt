@@ -10,6 +10,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.app.sns_project.databinding.ActivityMainBinding
+import com.app.sns_project.util.pushMessage
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -26,13 +27,13 @@ class MainActivity : AppCompatActivity() {
 
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        print(5)
 
 //        val appBarConfiguration = AppBarConfiguration(
 //            setOf(R.id.mainFragment,R.id.FollowFragment,R.id.postAddFragment,R.id.ChatFragment,R.id.ProfileFragment))
 //        NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration)
         binding.bottomNav.setupWithNavController(navController)
     }
+
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
