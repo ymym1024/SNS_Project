@@ -6,33 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class ItemPagerAdapter(private val context: Context, private val list: ArrayList<String>) :
-    RecyclerView.Adapter<ItemPagerAdapter.ViewHolder>() {
+class ItemPagerAdapter(private val context: Context, private val list: ArrayList<String>,val count:Int) :
+    RecyclerView.Adapter<ItemPagerAdapter.ImageViewHolder>() {
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_image_item, parent, false)
-        )
+        val width = context.getResources().getDisplayMetrics().widthPixels / count
+
+        val imageView = ImageView(parent.context)
+        imageView.layoutParams = LinearLayoutCompat.LayoutParams(width, width)
+
+        return ImageViewHolder(imageView)
     }
 
     override fun getItemCount(): Int = list.count()
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
+        var imageview = (holder as ImageViewHolder).imageView
         val data = list[position]
-//        if(data is Uri){
-//            holder.selectedImage.setImageURI(data)
-//        }else{
-           Glide.with(context).load(data).into(holder.selectedImage)
- //       }
+           Glide.with(context).load(data).into(imageview)
     }
 
-    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val selectedImage : ImageView = view.findViewById(R.id.select_image)
-    }
+    inner class ImageViewHolder(var imageView: ImageView): RecyclerView.ViewHolder(imageView)
 
 }
