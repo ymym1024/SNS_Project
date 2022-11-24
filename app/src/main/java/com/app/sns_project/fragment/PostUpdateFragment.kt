@@ -76,12 +76,14 @@ class PostUpdateFragment : Fragment() {
                 }else{
                     binding.postTextview.error = null
                 }
-                if(binding.postEdittext.text!!.length<=200){
-                    binding.updateButton.isEnabled = true
-                }
+                btnEnable()
 
             }
         })
+    }
+
+    private fun btnEnable(){
+        binding.updateButton.isEnabled = binding.postEdittext.text!!.length in 1..200
     }
 
     private fun queryItem(itemId:String){
