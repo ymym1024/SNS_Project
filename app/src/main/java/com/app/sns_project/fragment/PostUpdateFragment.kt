@@ -105,7 +105,7 @@ class PostUpdateFragment : Fragment() {
         firestore?.collection("post").document(itemId).update("content",content).addOnSuccessListener {
             Snackbar.make(binding.root, "수정되었습니다!!", Snackbar.LENGTH_SHORT).show()
             //업데이트 후 메인화면
-            findNavController().navigate(PostAddFragmentDirections.actionPostAddFragmentToDetailFragment(itemId,auth.currentUser!!.uid))
+            findNavController().navigate(R.id.action_postUpdateFragment_to_profileFragment)
         }
     }
 }

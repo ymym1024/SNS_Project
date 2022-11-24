@@ -159,7 +159,7 @@ class PostAddFragment : Fragment() {
     private fun saveSuccess(postId:String){
         binding.progressBar.visibility = View.GONE
         Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
-        findNavController().navigate(PostAddFragmentDirections.actionPostAddFragmentToDetailFragment(postId,auth.currentUser!!.uid))
+        findNavController().navigate(R.id.action_postAddFragment_to_profileFragment)
     }
 
     private fun saveFail(){

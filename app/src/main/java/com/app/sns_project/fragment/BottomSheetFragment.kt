@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -52,7 +53,8 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun delete(){
         //삭제 다이얼로그 띄우기
-        val builder = AlertDialog.Builder(requireActivity())
+
+        val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
         builder
             .setTitle("이 게시물을 삭제 하시겠습니까?")
             .setMessage("게시물을 삭제한 후에 복원은 불가능합니다.")
@@ -70,10 +72,10 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun dataDelete(){
         firestore.collection("post").document(postId).delete().addOnSuccessListener {
-            dismiss()
+            findNavController().navigate(R.id.action_bottomSheetFragment_to_profileFragment)
             Toast.makeText(context,"삭제에 성공했습니다!",Toast.LENGTH_LONG).show()
-        }.addOnFailureListener {
             dismiss()
+        }.addOnFailureListener {
             Toast.makeText(context,"삭제에 실패했습니다!",Toast.LENGTH_LONG).show()
         }
         //TODO : 새로고침
