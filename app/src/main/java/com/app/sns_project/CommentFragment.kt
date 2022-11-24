@@ -110,6 +110,9 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                     Log.d("uid = ", postUserId!!)
                     userContent.text = document.get("content").toString() // 게시물의 content 기입
                     var url : ArrayList<String> = document.get("imageUrl") as ArrayList<String>
+                    if(url == null) {
+                        url[0] = "https://firebasestorage.googleapis.com/v0/b/snsproject-638d2.appspot.com/o/images%2Fprofile_images%2Fwhite2.jpeg?alt=media&token=14c0cba4-78f1-4b3c-b7d6-b24fc105d3c1"
+                    }
                     Glide.with(this).load(url[0]).apply(RequestOptions())
                         .into(userImageContent)
                     //Log.d(TAG, "DocumentSnapshot data: ${document.data}")
