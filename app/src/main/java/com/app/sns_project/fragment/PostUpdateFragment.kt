@@ -1,6 +1,9 @@
 package com.app.sns_project.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +51,37 @@ class PostUpdateFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        textWatcher()
+    }
+
+    private fun textWatcher(){
+        binding.postEdittext.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                Log.d("textWatcher","beforeTextChanged")
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+            override fun afterTextChanged(p: Editable?) {
+                Log.d("textWatcher","afterTextChanged")
+                if(binding.postEdittext.text!!.isEmpty()){
+                    binding.postTextview.error = "글을 입력해주세요"
+                }else if(binding.postEdittext.text!!.length > 200){
+                    binding.postTextview.error = "200자 이내로 작성해주세요"
+                }else{
+                    binding.postTextview.error = null
+                }
+                if(binding.postEdittext.text!!.length<=200){
+                    binding.updateButton.isEnabled = true
+                }
+
+            }
+        })
     }
 
     private fun queryItem(itemId:String){

@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
 //        val appBarConfiguration = AppBarConfiguration(
-//            setOf(R.id.mainFragment,R.id.FollowFragment,R.id.postAddFragment,R.id.ChatFragment,R.id.ProfileFragment))
+//            setOf(R.id.mainFragment,R.id.FollowFragment,R.id.postAddFragment,R.id.ChatFragment,R.id.profileFragment))
 //        NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration)
         binding.bottomNav.setupWithNavController(navController)
     }
