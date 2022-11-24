@@ -22,7 +22,7 @@ class CommentActivity : AppCompatActivity() {
     var contentUid : String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_comment)
+        setContentView(R.layout.comment_fragment)
         // 프레그먼트에서 게시물 말풍선을 클릭 하게 되면 setOnclickListener 를 통해서 CommentActivity가 띄워 지도록 코딩.
         // Intent 를 통해서 CommentActivity::class.java로 넘어갈 수 있도록.
         // Intent 안에다가 contentUid 도 넘겨 준다. contentListUidList[position] 값.

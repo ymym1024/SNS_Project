@@ -65,7 +65,7 @@
         android:id="@+id/commentFragment"
         android:name="com.app.sns_project.CommentFragment"
         android:label="댓글"
-        tools:layout="@layout/activity_comment">
+        tools:layout="@layout/comment_fragment">
         <argument
             android:name="contentId"
             app:argType="string" />
