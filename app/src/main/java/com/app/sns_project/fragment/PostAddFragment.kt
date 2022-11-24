@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,7 +74,19 @@ class PostAddFragment : Fragment() {
                     list.add(imageUri)
                 }
                 setAdapater(list)
+                binding.validImageTextview.text = "이미지 ${list.size}개 선택"
+                btnEnable()
             }
+        }
+    }
+
+    private fun btnEnable(){
+        if(list.size == 0){
+            if(binding.postEdittext.text!!.length<=200){
+                binding.saveButton.isEnabled = true
+            }
+        }else{
+            binding.saveButton.isEnabled = binding.postEdittext.text!!.length<=200
         }
     }
 
@@ -92,10 +105,15 @@ class PostAddFragment : Fragment() {
             binding.userName.text = it.get("userName").toString()
         }
 
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         textWatcher()
         selectImage()
         addPost()
-        return binding.root
     }
 
     fun getRealPathFromURI(uri : Uri):String{
@@ -115,6 +133,8 @@ class PostAddFragment : Fragment() {
     //글 등록
     private fun addPost(){
         binding.saveButton.setOnClickListener {
+            //유효성 검사 한번 더
+
             binding.progressBar.visibility = View.VISIBLE
 
             val post = PostDTO()
@@ -124,7 +144,7 @@ class PostAddFragment : Fragment() {
             post.timestamp = System.currentTimeMillis()
 
             if(list.isNotEmpty()){
-                firestore?.collection("post").add(post).addOnSuccessListener {
+                firestore.collection("post").add(post).addOnSuccessListener {
                     postId = it.id
                     uploadImageAll()
                 }.addOnFailureListener {
@@ -132,7 +152,7 @@ class PostAddFragment : Fragment() {
                 }
             }else{
                 //post.imageUrl = arrayListOf()
-                firestore?.collection("post").add(post).addOnSuccessListener {
+                firestore.collection("post").add(post).addOnSuccessListener {
                     postId = it.id
                     saveSuccess(postId)
                 }.addOnFailureListener {
@@ -158,7 +178,7 @@ class PostAddFragment : Fragment() {
         var saveImageList:ArrayList<String> = arrayListOf()
         for(i:Int in 0 until list.size){
             var imageFileName = "upload_images/"+timestamp+i+"_.png"
-            var imageRef = storage.reference.child(UPLOAD_FOLDER_NAME)?.child(imageFileName)
+            var imageRef = storage.reference.child(UPLOAD_FOLDER_NAME).child(imageFileName)
             val fileName = File(list.get(i)).toUri()
 
             imageRef.putFile(fileName).addOnSuccessListener {
@@ -180,10 +200,13 @@ class PostAddFragment : Fragment() {
     private fun textWatcher(){
         binding.postEdittext.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                Log.d("textWatcher","beforeTextChanged")
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
             }
             override fun afterTextChanged(p: Editable?) {
+                Log.d("textWatcher","afterTextChanged")
                 if(binding.postEdittext.text!!.isEmpty()){
                     binding.postTextview.error = "글을 입력해주세요"
                 }else if(binding.postEdittext.text!!.length > 200){
@@ -191,6 +214,10 @@ class PostAddFragment : Fragment() {
                 }else{
                     binding.postTextview.error = null
                 }
+                if(binding.postEdittext.text!!.length<=200){
+                    btnEnable()
+                }
+
             }
         })
     }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -59,6 +60,7 @@ class MainFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        Log.d("main","onStop")
         if(postSnapshot!=null){
             postSnapshot!!.remove()
         }
@@ -114,7 +116,7 @@ class MainFragment : Fragment() {
             val postFavoriteCnt : TextView = itemView.findViewById(R.id.post_favorite_cnt)
             val postFavorite : ImageView = itemView.findViewById(R.id.post_favorite)
             val postMenu : Button = itemView.findViewById(R.id.post_menu)
-            val postComment : TextView = itemView.findViewById(R.id.comment_button)
+            val postComment : ImageView = itemView.findViewById(R.id.comment_button)
         }
 
         override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
@@ -140,7 +142,7 @@ class MainFragment : Fragment() {
             }
 
             if(itemList[position].favoriteCount>0){
-                holder.postFavoriteCnt.text = "${itemList[position].favoriteCount}명이 좋아합니다."
+                holder.postFavoriteCnt.text = "좋아요 ${itemList[position].favoriteCount}개"
             }else{
                 holder.postFavoriteCnt.text = ""
             }
@@ -150,9 +152,9 @@ class MainFragment : Fragment() {
 
             //좋아요 버튼 상태값 변경
             if(itemList[position].favorites.containsKey(uid)){
-                holder.postFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
+                holder.postFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_24)
             }else{
-                holder.postFavorite.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+                holder.postFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_border_24)
             }
 
             //좋아요 버튼 클릭 이벤트

@@ -52,7 +52,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/my_img"
+        android:id="@+id/myImg"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@+id/linear">
@@ -60,38 +60,41 @@
     </ImageView>
 
     <TextView
-        android:id="@+id/my_text"
+        android:id="@+id/myText"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_below="@+id/my_img">
+        android:layout_height="60dp"
+        android:layout_below="@+id/myImg">
 
     </TextView>
 
     <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/image_division"
-        android:layout_below="@+id/my_text"
+        android:layout_below="@+id/myText"
         android:background="@color/blue_01_main"
         android:layout_width="match_parent"
         android:layout_height="1dp">
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="10dp"
         android:layout_below="@+id/image_division"
         android:id="@+id/commentRecyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="150dp">
     </androidx.recyclerview.widget.RecyclerView>
+
     <Button
         android:id="@+id/commentSendButton"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/commentRecyclerview"
-        android:layout_margin="10dp"
-        android:text="SEND"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </Button>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/commentRecyclerview"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="SEND"></Button>
 
     <EditText
         android:id="@+id/commentEditText"
@@ -99,9 +102,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/commentRecyclerview"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
-        android:layout_toLeftOf="@+id/commentSendButton"></EditText>
+        android:layout_toStartOf="@+id/commentSendButton"
+        android:layout_toLeftOf="@+id/commentSendButton"
+        android:hint="add Comment!"
+        android:minHeight="48dp"></EditText>
 
 </RelativeLayout>
