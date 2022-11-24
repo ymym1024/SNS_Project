@@ -177,9 +177,9 @@ class MainFragment : Fragment() {
             }
 
             //댓글 상세화면으로 이동
-//            holder.postComment.setOnClickListener {
-//               findNavController().navigate(MainFragmentDirections.actionMainFragmentToCommentFragment(postIdList[position]))
-//            }
+            holder.postComment.setOnClickListener {
+               findNavController().navigate(MainFragmentDirections.actionMainFragmentToCommentFragment(postIdList[position]))
+            }
         }
         override fun getItemCount(): Int {
             return itemList.size
