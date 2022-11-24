@@ -115,9 +115,10 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                             .into(userImageContent)
                     }catch (e : Exception){
                         Log.d("ddd", "ddd")
-                        val urlException = "https://firebasestorage.googleapis.com/v0/b/snsproject-638d2.appspot.com/o/images%2Fprofile_images%2Fwhite2.jpeg?alt=media&token=14c0cba4-78f1-4b3c-b7d6-b24fc105d3c1"
-                        Glide.with(this).load(urlException).apply(RequestOptions())
-                            .into(userImageContent)
+                        userImageContent.visibility=View.GONE
+//                        val urlException = "https://firebasestorage.googleapis.com/v0/b/snsproject-638d2.appspot.com/o/images%2Fprofile_images%2Fwhite2.jpeg?alt=media&token=14c0cba4-78f1-4b3c-b7d6-b24fc105d3c1"
+//                        Glide.with(this).load(urlException).apply(RequestOptions())
+//                            .into(userImageContent)
                     }
                     //Log.d(TAG, "DocumentSnapshot data: ${document.data}")
                 } else {
