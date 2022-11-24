@@ -133,6 +133,20 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
 
     }
 
+//    private fun logOut() {
+//        val uid : String? = null
+//        var userId = FirebaseAuth.getInstance().currentUser?.uid
+//        val logoutButton = binding.logoutButton
+//        if(uid == userId) {
+//            logoutButton.setOnclickListener {
+//                startActivity(Intent(activity, LoginActivity))
+//            }
+//        }
+//        else {
+//            logoutButton.visibility = View.INVISIBLE
+//        }
+//    }
+
     private fun commentAlarm(postUseruid:String){
         FirebaseFirestore.getInstance().collection("user").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
             val userName = it["userName"] as String
