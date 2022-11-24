@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,13 +20,13 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.app.sns_project.databinding.CommentFragmentBinding
+import com.app.sns_project.util.pushMessage
 import com.google.firebase.firestore.DocumentSnapshot
 
 class CommentFragment : Fragment() { //R.layout.comment_fragment
 
     private lateinit var binding: CommentFragmentBinding
     var contentUid : String? = null
-    //lateinit var v : View
     private lateinit var myAdapter : CommentFragment.CommentRecyclerviewAdapter
     var comments : ArrayList<ContentDTO.Comment> = arrayListOf()
 
@@ -35,67 +36,7 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
         savedInstanceState: Bundle?
     ): View? {
            binding = CommentFragmentBinding.inflate(inflater, container, false)
-//        val args:CommentFragmentArgs by navArgs()
-//        contentUid = args.contentId
-//
-//        //var v = inflater.inflate(R.layout.activity_comment, container, false)
-//        //val commentRecyclerView = v.findViewById<RecyclerView>(R.id.commentRecyclerview)
-//        val commentRecyclerView = binding.commentRecyclerview
-//        commentRecyclerView.adapter  = CommentFragment().CommentRecyclerviewAdapter()
-//        commentRecyclerView.layoutManager = LinearLayoutManager(activity)
-//
-////        val commentSendButton = v.findViewById<Button>(R.id.commentSendButton)
-//        val commentSendButton = binding.commentSendButton
-//        commentSendButton.setOnClickListener {
-//            var comment = ContentDTO.Comment()
-//            comment.userId = FirebaseAuth.getInstance().currentUser?.email
-//            comment.uid = FirebaseAuth.getInstance().currentUser?.uid
-//            comment.userName = FirebaseAuth.getInstance().currentUser?.displayName // 유저 이름
-////            val commentEditText = v.findViewById<EditText>(R.id.commentEditText)
-//            val commentEditText = binding.commentEditText
-//            comment.comment = commentEditText.text.toString()
-//            comment.timestamp = System.currentTimeMillis()
-//
-//            FirebaseFirestore.getInstance().collection("posts").document(contentUid!!)
-//                .collection("comments").document().set(comment)
-//            commentEditText.setText("")
-//        }
-//
-//        //val userName = v.findViewById<TextView>(R.id.commentViewUserName) // 게시글을 올린 유저의 이름
-//        val userName = binding.commentViewUserName
-//        var postUserId: String? = null // 게시글을 올린 유저의 uid
-////        var userContent = v.findViewById<TextView>(R.id.my_text) // 게시글 content
-//        var userContent = binding.myText
-//        FirebaseFirestore.getInstance().collection("post").document(contentUid!!)
-//            .get().addOnSuccessListener { document ->
-//                if (document != null) {
-//                    userName.text = document.get("userName").toString() // 유저의 이름을 기입
-//                    postUserId = document.get("uid").toString()
-//                    userContent.text = document.get("content").toString() // 게시물의 content 기입
-//                    //Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-//                } else {
-//                    Log.d(TAG, "No such document")
-//                }
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.d(TAG, "get failed with ", exception)
-//            }
-//
-////        val userProfile = v.findViewById<ImageView>(R.id.postViewProfile) // 게시글을 올린 유저의 프로필
-//        val userProfile = binding.postViewProfile
-//        FirebaseFirestore.getInstance().collection("user").document(postUserId!!).get()
-//            .addOnSuccessListener { document ->
-//                if(document != null) {
-//                    var url = document.get("profileImage")
-//                    Glide.with(this).load(url).apply(RequestOptions().circleCrop())
-//                        .into(userProfile)
-//                }
-//            }
-//        return if(this::binding.isInitialized){
-//            binding.root
-//        } else{
-//            null
-//        }
+
         Log.d("onCreateView", "zzz")
         val args:CommentFragmentArgs by navArgs()
         contentUid = args.contentId
@@ -119,19 +60,8 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        val args:CommentFragmentArgs by navArgs()
-//        contentUid = args.contentId
         Log.d("contentUid in onViewCreated", contentUid!!)
-
-        //var v = inflater.inflate(R.layout.activity_comment, container, false)
-        //val commentRecyclerView = v.findViewById<RecyclerView>(R.id.commentRecyclerview)
-//        val commentRecyclerView = binding.commentRecyclerview
-//        myAdapter = CommentFragment().CommentRecyclerviewAdapter()
-//        commentRecyclerView.adapter = myAdapter
-//                //commentRecyclerView.adapter  = CommentFragment().CommentRecyclerviewAdapter()
-//        commentRecyclerView.layoutManager = LinearLayoutManager(context) // activity?
         Log.d("onViewCreated", this::binding.toString())
-//        val commentSendButton = v.findViewById<Button>(R.id.commentSendButton)
         val commentSendButton = binding.commentSendButton
         var name : String? = null
         commentSendButton.setOnClickListener {
@@ -151,14 +81,18 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                     FirebaseFirestore.getInstance().collection("post").document(contentUid!!)
                         .collection("comments").document().set(comment)
                 }
-//            val commentEditText = v.findViewById<EditText>(R.id.commentEditText)
             val commentEditText = binding.commentEditText
             comment.comment = commentEditText.text.toString()
             comment.timestamp = System.currentTimeMillis()
 
-//            FirebaseFirestore.getInstance().collection("post").document(contentUid!!)
-//                .collection("comments").document().set(comment)
+
             commentEditText.setText("")
+            FirebaseFirestore.getInstance().collection("post").document(contentUid!!)
+                .get().addOnSuccessListener {
+                    Log.d("PostUserName", it.get("userName").toString())
+                    commentAlarm(it.get("userName").toString())
+                }
+
         }
 
         //val userName = v.findViewById<TextView>(R.id.commentViewUserName) // 게시글을 올린 유저의 이름
@@ -176,10 +110,6 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                     Log.d("uid = ", postUserId!!)
                     userContent.text = document.get("content").toString() // 게시물의 content 기입
                     var url : ArrayList<String> = document.get("imageUrl") as ArrayList<String>
-//                    if (url != null) {
-//                        println(url.javaClass.name)
-//                    }
-//                    println(url[0])
                     Glide.with(this).load(url[0]).apply(RequestOptions())
                         .into(userImageContent)
                     //Log.d(TAG, "DocumentSnapshot data: ${document.data}")
@@ -199,32 +129,19 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
             }
-       // Log.d("userName", userName.text)
-//        val userProfile = v.findViewById<ImageView>(R.id.postViewProfile) // 게시글을 올린 유저의 프로필
         println("kkkkkkkkkk")
-//        val userProfile = binding.postViewProfile // ok
 
-//        postUserId = "m2Jby2V5X9bhhNJrcI97BaulRH32" // *******
-//        Log.d("postUserId after Firebase", postUserId!!)
-//        FirebaseFirestore.getInstance().collection("user").document(postUserId!!).get()
-//            .addOnSuccessListener { document ->
-//                if(document != null) {
-//                    var url = document.get("profileImage")
-//                    Glide.with(this).load(url).apply(RequestOptions().circleCrop())
-//                        .into(userProfile)
-//                }
-//            }
     }
 
-//    private fun CommentAlarm(postUseruid:String){
-//        FirebaseFirestore.getInstance().collection("user").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
-//            val userName = it["userName"] as String
-//
-//            Log.d("userName",userName)
-//            var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
-//            pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
-//        }
-//    }
+    private fun commentAlarm(postUseruid:String){
+        FirebaseFirestore.getInstance().collection("user").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
+            val userName = it["userName"] as String
+
+            Log.d("userName",userName)
+            var message = String.format("%s 님이 댓글을 남겼습니다.",userName)
+            pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
+        }
+    }
 
     private fun commentLoading(){
         //setAdapter()
@@ -261,30 +178,7 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
     }
 
     inner class CommentRecyclerviewAdapter(var comments: ArrayList<ContentDTO.Comment>, var contentUid : String?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-//        private val deleteButton: ImageButton = v.findViewById<ImageButton>(R.id.deleteButton)
-        //private val deleteButton: ImageButton = binding.deleteCommentButton
-        //var comments : ArrayList<ContentDTO.Comment> = arrayListOf() // comment 를 담을 ArrayList
-//        init {
-////            val args:CommentFragmentArgs by navArgs()
-////            contentUid = args.contentId
-//            println("in init $contentUid")
-//            contentUid = "98gEZ3ziBphbvDw80KAh" /// *******
-//            Log.d("contentUid in init", contentUid!!)
-//            Log.d("in inner class init", "ok")
-//            FirebaseFirestore.getInstance()
-//                .collection("post")
-//                .document(contentUid!!)
-//                .collection("comments")
-//                .orderBy("timestamp")
-//                .addSnapshotListener { querySnapShot, FirebaseFirestoreException ->
-//                    if(querySnapShot == null)
-//                        return@addSnapshotListener
-//                    for(snapshot in querySnapShot.documents!!) {
-//                        comments.add(snapshot.toObject(ContentDTO.Comment::class.java)!!)
-//                    }
-//                    notifyDataSetChanged() // 리싸이클러 뷰 새로고침
-//                }
-//        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             var view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
             return CustomViewHolder(view)
@@ -308,7 +202,21 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                             .into(view.findViewById(R.id.commentViewProfile))
                     }
                 }
+
             val deleteButton = view.findViewById<ImageButton>(R.id.deleteButton)
+
+            FirebaseFirestore.getInstance()
+                .collection("post")
+                .document(contentUid!!)
+                .collection("comments")
+                .orderBy("timestamp").addSnapshotListener { value, error ->
+                    if(value == null) return@addSnapshotListener
+                    val commUid = value.documents[position].get("uid")
+                    if(commUid != FirebaseAuth.getInstance().currentUser?.uid){
+                        deleteButton.visibility = View.INVISIBLE
+                    }
+                }
+
             deleteButton.setOnClickListener {
 //                comments.removeAt(position)
 //                notifyItemRemoved(position)
@@ -321,26 +229,22 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                     .orderBy("timestamp").addSnapshotListener { value, error ->
                         if(value == null) return@addSnapshotListener
                         val comm = value.documents[position]
-                        Log.d("doc Id",comm.id)
-//                        FirebaseFirestore.getInstance()
-//                            .collection("post")
-//                            .document(contentUid!!)
-//                            .collection("comments")
-//                            .document(comm.id).get().addOnSuccessListener {
-//                                var a = it.get("uid")
-//                                Log.d("uid", a as String)
-//                            }
-//                        FirebaseFirestore.getInstance()
-//                            .collection("post")
-//                            .document(contentUid!!)
-//                            .collection("comments")
-//                            .document(comm.id)
-//                            .delete()
-//                            .addOnCompleteListener {
-//                                if(it.isSuccessful){
-//                                    Log.d("comment delete", "success")
-//                                }
-//                            }
+                        Log.d("position", position.toString())
+                        val commentId = comm.id
+                        Log.d("comment doc Id",commentId)
+                        FirebaseFirestore.getInstance()
+                            .collection("post")
+                            .document(contentUid!!)
+                            .collection("comments")
+                            .document(commentId)
+                            .delete()
+                            .addOnSuccessListener {
+                                //notifyItemRangeChanged(position, comments.size-1)
+                                Log.d("delete", position.toString())
+                            }
+                            .addOnFailureListener {
+                                Log.d("error", it.toString())
+                            }
                     }
 
             }
