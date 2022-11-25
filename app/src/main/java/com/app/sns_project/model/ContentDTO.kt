@@ -19,5 +19,6 @@ data class ContentDTO(val imageUrl : String? = null, // 이미지 관리
                         var followingCount: Int = 0,
                         var profileImage: String? = null,
                         var followers: HashMap<String, String>,
-                        var following: HashMap<String, String>)
+                        var following: HashMap<String, String>,
+                        var chat: HashMap<String, String>)
 }
