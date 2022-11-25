@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -77,6 +78,9 @@ class RecyclerViewAdapter(private val viewModel: MyViewModel, val context: Conte
                 // 내 팔로잉 숫자 +1, 내 팔로잉 목록에 해당 유저 추가
                 // 해당 유저 팔로워 숫자 +1, 해당 유저 팔로워 목록에 나 추가
                 followUser()
+
+                // 알림 보내기
+                alarmFollow()
 
             }
             deletebutton.setOnClickListener {
@@ -182,6 +186,24 @@ class RecyclerViewAdapter(private val viewModel: MyViewModel, val context: Conte
 
             // 앱에서 보여지는 현재 로그인한 user의 팔로워 목록 업데이트
             viewModel.deleteItem(index)
+        }
+
+        private fun alarmFollow(){
+            val index = adapterPosition
+            val clickedUser = viewModel.items[index] // 현재 로그인한 user의 팔로워 목록에서 팔로우당한 user
+
+            userColRef.document(currentUid).get().addOnSuccessListener {
+                val userName = it["userName"] as String
+
+                Log.d("userName",userName)
+                var message = String.format("%s 님이 회원님을 팔로우합니다.",userName)
+                userColRef.whereEqualTo("userName",clickedUser.username).get()
+                    .addOnSuccessListener {
+                        for (doc in it){
+                            pushMessage()?.sendMessage(doc.id, "알림 메세지 입니다.", message)
+                        }
+                    }
+            }
         }
 
     }

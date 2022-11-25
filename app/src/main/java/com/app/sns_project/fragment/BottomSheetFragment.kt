@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
@@ -54,20 +55,24 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     private fun delete(){
         //삭제 다이얼로그 띄우기
 
-        val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-        builder
-            .setTitle("이 게시물을 삭제 하시겠습니까?")
-            .setMessage("게시물을 삭제한 후에 복원은 불가능합니다.")
-            .setPositiveButton("네") { dialog , which ->
-                // 기능구현
-                dataDelete()
-            }
-            .setNegativeButton("아니요"){ dialog, which ->
-                // 기능구현
-                dialog.dismiss()
-            }
+        val layoutInflater = LayoutInflater.from(context)
+        val view = layoutInflater.inflate(R.layout.custom_dialog_postdelete,null)
+
+        val alertDialog = android.app.AlertDialog.Builder(context,R.style.CustomAlertDialog)
+            .setView(view)
             .create()
-            .show()
+
+        val deleteButton = view.findViewById<ImageButton>(R.id.deleteButton)
+        val cancelButton = view.findViewById<ImageButton>(R.id.cancelButton)
+
+        deleteButton.setOnClickListener {
+            dataDelete()
+        }
+        cancelButton.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
     }
 
     private fun dataDelete(){
