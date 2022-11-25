@@ -19,7 +19,6 @@ class FirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
-        pushMessage().saveToken() // 현재 앱사용자의 토큰 저장
     }
 
 
@@ -35,7 +34,7 @@ class FirebaseMessagingService : FirebaseMessagingService() {
     private fun sendNotification(messageTitle: String, messageBody: String) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         val channelId = TAG
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)

@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_mainFragment_to_commentFragment"
             app:destination="@id/commentFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/postAddFragment"
@@ -23,8 +26,9 @@
             android:id="@+id/action_postAddFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
         <action
-            android:id="@+id/action_postAddFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            android:id="@+id/action_postAddFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/postUpdateFragment"
@@ -35,11 +39,9 @@
             android:name="postId"
             app:argType="string" />
         <action
-            android:id="@+id/action_postUpdateFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-        <action
-            android:id="@+id/action_postUpdateFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            android:id="@+id/action_postUpdateFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+
     </fragment>
 
     <fragment
@@ -95,6 +97,9 @@
         <action
             android:id="@+id/action_profileFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_profileUpdateFragment"
+            app:destination="@id/profileUpdateFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -124,7 +129,20 @@
         <argument
             android:name="postId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_bottomSheetFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpToInclusive="true"/>
     </dialog>
+    <fragment
+        android:id="@+id/profileUpdateFragment"
+        android:name="com.app.sns_project.fragment.ProfileUpdateFragment"
+        android:label="프로필 수정"
+        tools:layout="@layout/fragment_profile_update" >
+        <argument
+            android:name="uid"
+            app:argType="string" />
+    </fragment>
 
 
 </navigation>

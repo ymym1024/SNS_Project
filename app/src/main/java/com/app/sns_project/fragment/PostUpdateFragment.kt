@@ -76,12 +76,14 @@ class PostUpdateFragment : Fragment() {
                 }else{
                     binding.postTextview.error = null
                 }
-                if(binding.postEdittext.text!!.length<=200){
-                    binding.updateButton.isEnabled = true
-                }
+                btnEnable()
 
             }
         })
+    }
+
+    private fun btnEnable(){
+        binding.updateButton.isEnabled = binding.postEdittext.text!!.length in 1..200
     }
 
     private fun queryItem(itemId:String){
@@ -103,7 +105,7 @@ class PostUpdateFragment : Fragment() {
         firestore?.collection("post").document(itemId).update("content",content).addOnSuccessListener {
             Snackbar.make(binding.root, "수정되었습니다!!", Snackbar.LENGTH_SHORT).show()
             //업데이트 후 메인화면
-            findNavController().navigate(PostAddFragmentDirections.actionPostAddFragmentToDetailFragment(itemId,auth.currentUser!!.uid))
+            findNavController().navigate(R.id.action_postUpdateFragment_to_profileFragment)
         }
     }
 }
