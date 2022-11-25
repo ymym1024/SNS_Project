@@ -224,9 +224,13 @@ class PostAddFragment : Fragment() {
         binding.addButton.setOnClickListener {
             list.clear()
            val readPermission = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
-            if(readPermission == PackageManager.PERMISSION_DENIED){
+            val writePermission = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+            if(readPermission == PackageManager.PERMISSION_DENIED || writePermission == PackageManager.PERMISSION_DENIED){
                 ActivityCompat.requestPermissions(requireActivity(), arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE),
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
                     REQ_GALLERY
                 )
             }else{
