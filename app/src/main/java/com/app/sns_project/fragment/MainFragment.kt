@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.text.SimpleDateFormat
 
@@ -60,7 +61,6 @@ class MainFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        Log.d("main","onStop")
         if(postSnapshot!=null){
             postSnapshot!!.remove()
         }
@@ -73,7 +73,7 @@ class MainFragment : Fragment() {
                 val list = task.result["following"]
                 if(list!=null){
                     userFollowingList = list as HashMap<String,String>
-                    postSnapshot = firestore.collection("post").orderBy("timestamp")?.addSnapshotListener { value, error ->
+                    postSnapshot = firestore.collection("post").orderBy("timestamp", Query.Direction.DESCENDING)?.addSnapshotListener { value, error ->
                         postList.clear()
                         postIdList.clear()
                         if(value == null) return@addSnapshotListener
@@ -115,7 +115,6 @@ class MainFragment : Fragment() {
             val postIndicator :DotsIndicator = itemView.findViewById(R.id.post_image_indicator)
             val postFavoriteCnt : TextView = itemView.findViewById(R.id.post_favorite_cnt)
             val postFavorite : ImageView = itemView.findViewById(R.id.post_favorite)
-            val postMenu : Button = itemView.findViewById(R.id.post_menu)
             val postComment : ImageView = itemView.findViewById(R.id.comment_button)
         }
 
@@ -145,9 +144,6 @@ class MainFragment : Fragment() {
                 holder.postFavoriteCnt.text = "좋아요 ${itemList[position].favoriteCount}개"
             }else{
                 holder.postFavoriteCnt.text = ""
-            }
-            if(!itemList[position].uid.equals(auth.currentUser?.uid)) {
-                holder.postMenu.visibility = View.INVISIBLE
             }
 
             //좋아요 버튼 상태값 변경
@@ -180,6 +176,14 @@ class MainFragment : Fragment() {
             holder.postComment.setOnClickListener {
                findNavController().navigate(MainFragmentDirections.actionMainFragmentToCommentFragment(postIdList[position]))
             }
+
+            holder.userImage.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putString("uid", postList[position].uid)
+                bundle.putString("userName",postList[position].userName)
+                findNavController().navigate(R.id.action_mainFragment_to_profileFragment,bundle)
+            }
+
         }
         override fun getItemCount(): Int {
             return itemList.size

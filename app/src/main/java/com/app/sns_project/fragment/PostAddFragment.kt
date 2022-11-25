@@ -81,13 +81,7 @@ class PostAddFragment : Fragment() {
     }
 
     private fun btnEnable(){
-        if(list.size == 0){
-            if(binding.postEdittext.text!!.length<=200){
-                binding.saveButton.isEnabled = true
-            }
-        }else{
-            binding.saveButton.isEnabled = binding.postEdittext.text!!.length<=200
-        }
+        binding.saveButton.isEnabled = binding.postEdittext.text!!.length in 1..200
     }
 
     override fun onCreateView(
@@ -165,7 +159,7 @@ class PostAddFragment : Fragment() {
     private fun saveSuccess(postId:String){
         binding.progressBar.visibility = View.GONE
         Snackbar.make(binding.root, "글이 등록되었습니다.", Snackbar.LENGTH_SHORT).show()
-        findNavController().navigate(PostAddFragmentDirections.actionPostAddFragmentToDetailFragment(postId,auth.currentUser!!.uid))
+        findNavController().navigate(R.id.action_postAddFragment_to_profileFragment)
     }
 
     private fun saveFail(){
@@ -214,10 +208,7 @@ class PostAddFragment : Fragment() {
                 }else{
                     binding.postTextview.error = null
                 }
-                if(binding.postEdittext.text!!.length<=200){
-                    btnEnable()
-                }
-
+                btnEnable()
             }
         })
     }
@@ -231,10 +222,15 @@ class PostAddFragment : Fragment() {
 
     private fun selectImage(){
         binding.addButton.setOnClickListener {
+            list.clear()
            val readPermission = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
-            if(readPermission == PackageManager.PERMISSION_DENIED){
+            val writePermission = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+            if(readPermission == PackageManager.PERMISSION_DENIED || writePermission == PackageManager.PERMISSION_DENIED){
                 ActivityCompat.requestPermissions(requireActivity(), arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE),
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
                     REQ_GALLERY
                 )
             }else{

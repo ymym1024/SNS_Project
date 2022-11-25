@@ -24,7 +24,6 @@ class DetailFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
 
-    var postListener : ListenerRegistration?=null
     var profile = PostDTO()
 
     override fun onCreateView(
@@ -49,21 +48,21 @@ class DetailFragment : Fragment() {
         firestore.collection("user").document(postUser).get().addOnSuccessListener {
             val image = it.data!!["profileImage"]
             Glide.with(binding.userImageImageView.context).load(image).into(binding.userImageImageView)
+            Log.d("postId",postId)
 
-            postListener = firestore?.collection("post").document(postId).addSnapshotListener { value, error ->
-                if (value == null) return@addSnapshotListener
+            firestore?.collection("post").document(postId).get().addOnSuccessListener{ value ->
+                if (value == null) return@addOnSuccessListener
                 val data = value?.data!!
 
-                profile.userName =  data["userName"] as String
+                profile.userName = data["userName"] as String
                 profile.content = data["content"] as String
                 profile.timestamp = data["timestamp"] as Long
                 profile.imageUrl = data["imageUrl"] as ArrayList<String>
                 profile.favoriteCount = Integer.parseInt(data["favoriteCount"].toString())
                 profile.uid = data["uid"] as String
-                profile.favorites = data["favorites"] as HashMap<String,Boolean>
+                profile.favorites = data["favorites"] as HashMap<String, Boolean>
 
                 initView(postId)
-
             }
         }
     }
@@ -145,13 +144,5 @@ class DetailFragment : Fragment() {
         val sdf = SimpleDateFormat("yyyy.MM.dd HH:mm")
         val date = sdf.format(time).toString()
         return date
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if(postListener!=null){
-            postListener?.remove()
-        }
-
     }
 }

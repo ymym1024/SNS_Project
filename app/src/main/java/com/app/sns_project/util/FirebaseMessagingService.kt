@@ -19,7 +19,6 @@ class FirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
-        pushMessage().saveToken() // 현재 앱사용자의 토큰 저장
     }
 
 
