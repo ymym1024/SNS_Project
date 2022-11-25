@@ -28,6 +28,8 @@
         <entry key="app/src/main/res/layout/custom_button.xml" value="0.2640625" />
         <entry key="app/src/main/res/layout/custom_dialog_search.xml" value="0.2399193548387097" />
         <entry key="app/src/main/res/layout/fragment_bottom_sheet.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.25703125" />
+        <entry key="app/src/main/res/layout/fragment_chatroom.xml" value="0.25703125" />
         <entry key="app/src/main/res/layout/fragment_detail.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_follow.xml" value="0.25625" />
         <entry key="app/src/main/res/layout/fragment_follower.xml" value="0.25625" />

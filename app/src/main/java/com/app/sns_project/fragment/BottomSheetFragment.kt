@@ -58,7 +58,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(R.layout.custom_dialog_postdelete,null)
 
-        val alertDialog = android.app.AlertDialog.Builder(context,R.style.CustomAlertDialog)
+        var alertDialog = android.app.AlertDialog.Builder(context,R.style.CustomAlertDialog)
             .setView(view)
             .create()
 
@@ -67,6 +67,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
         deleteButton.setOnClickListener {
             dataDelete()
+            alertDialog.dismiss()
         }
         cancelButton.setOnClickListener {
             alertDialog.dismiss()
@@ -79,7 +80,6 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         firestore.collection("post").document(postId).delete().addOnSuccessListener {
             findNavController().navigate(R.id.action_bottomSheetFragment_to_profileFragment)
             Toast.makeText(context,"삭제에 성공했습니다!",Toast.LENGTH_LONG).show()
-            dismiss()
         }.addOnFailureListener {
             Toast.makeText(context,"삭제에 실패했습니다!",Toast.LENGTH_LONG).show()
         }
