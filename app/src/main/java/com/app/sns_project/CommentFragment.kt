@@ -72,6 +72,7 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                     if (document != null) {
                         comment.userName = document.get("userName").toString() // ??null??
                         Log.d("userName", comment.userName!!)
+                        myAdapter.notifyDataSetChanged()
                     } else {
                         Log.d(TAG, "No such document")
                     }
@@ -266,6 +267,7 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                     .document(commentDocId)
                     .delete()
                     .addOnSuccessListener {
+                        notifyDataSetChanged()
                         Log.d("delete", "completed")
                     }
 
@@ -279,29 +281,3 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
 
     }
 }
-
-//FirebaseFirestore.getInstance()
-//.collection("post")
-//.document(contentUid!!)
-//.collection("comments")
-//.orderBy("timestamp").addSnapshotListener { value, error ->
-//    if(value == null) return@addSnapshotListener
-//    val comm = value.documents[position]
-//    Log.d("position in clickListener", position.toString())
-//    val commentId = comm.id
-//    Log.d("comment doc Id in clickListener",commentId)
-//    //deleteComment(commentId, contentUid)
-////                        FirebaseFirestore.getInstance()
-////                            .collection("post")
-////                            .document(contentUid!!)
-////                            .collection("comments")
-////                            .document(commentId)
-////                            .delete()
-////                            .addOnSuccessListener {
-////                                //notifyItemRangeChanged(position, comments.size-1)
-////                                Log.d("delete", position.toString())
-////                            }
-////                            .addOnFailureListener {
-////                                Log.d("error", it.toString())
-////                            }
-//}
