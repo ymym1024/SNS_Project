@@ -175,7 +175,7 @@ class MainFragment : Fragment() {
 
             //댓글 상세화면으로 이동
             holder.postComment.setOnClickListener {
-               findNavController().navigate(MainFragmentDirections.actionMainFragmentToCommentFragment(postIdList[position]))
+               findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(postIdList[position],itemList[position].uid.toString()))
             }
 
             holder.userImage.setOnClickListener {
