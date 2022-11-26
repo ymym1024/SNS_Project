@@ -36,17 +36,18 @@ class SignupActivity : AppCompatActivity() {
                     Toast.makeText(this, "비밀번호는 6자리 이상 12자리 이하로 입력해 주세요.", Toast.LENGTH_SHORT).show()
                 }
 
-                if(userPassword.equals(userPasswordConfirm)) {
+                if(userPassword == userPasswordConfirm) {
                     doSignup(userEmail, userPassword, userName)
+                    //updateProfile(userName)
                 }
                 else {
                     Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
                 }
-                updateProfile(userName)
-                val user = Firebase.auth.currentUser
-                if (user != null) {
-                    println("###########${user.displayName}")
-                }
+                //updateProfile(userName)
+//                val user = Firebase.auth.currentUser
+//                if (user != null) {
+//                    println("###########${user.displayName}")
+//                }
             }
             else {
                 Toast.makeText(this, "모든 정보를 입력해 주세요.", Toast.LENGTH_SHORT).show()
