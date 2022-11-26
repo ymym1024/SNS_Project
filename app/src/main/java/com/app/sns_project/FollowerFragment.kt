@@ -51,7 +51,7 @@ class FollowerFragment : Fragment() {
             }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        val adapter = RecyclerViewAdapter(viewModel,context)
+        val adapter = RecyclerViewAdapter(viewModel,context,this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 

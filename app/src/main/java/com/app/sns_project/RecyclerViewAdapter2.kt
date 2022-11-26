@@ -3,11 +3,14 @@ package com.app.sns_project
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -16,7 +19,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
 
-class RecyclerViewAdapter2(private val viewModel: MyViewModel, val context: Context?):
+class RecyclerViewAdapter2(private val viewModel: MyViewModel, val context: Context?, val fragment: Fragment):
     RecyclerView.Adapter<RecyclerViewAdapter2.RecyclerViewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewViewHolder {
@@ -80,6 +83,20 @@ class RecyclerViewAdapter2(private val viewModel: MyViewModel, val context: Cont
 
                 alertDialog.show()
 
+            }
+
+            profileImage.setOnClickListener {
+                val index = adapterPosition
+                val clickedUser = viewModel.items2[index] // 현재 로그인한 user의 팔로잉 목록에서 클릭당한 user
+                userColRef.whereEqualTo("userName", clickedUser.username).get()
+                    .addOnSuccessListener {
+                        for (doc in it) {
+                            val bundle = Bundle()
+                            bundle.putString("uid", doc.id)
+                            bundle.putString("userName", doc["userName"].toString())
+                            fragment.findNavController().navigate(R.id.action_FollowFragment_to_profileFragment, bundle)
+                        }
+                    }
             }
         }
 

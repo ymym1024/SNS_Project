@@ -48,7 +48,7 @@ class FollowingFragment : Fragment() {
             }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        val adapter = RecyclerViewAdapter2(viewModel,context)
+        val adapter = RecyclerViewAdapter2(viewModel,context,this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
