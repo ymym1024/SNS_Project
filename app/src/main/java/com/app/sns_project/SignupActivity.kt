@@ -28,7 +28,7 @@ class SignupActivity : AppCompatActivity() {
             val userName = findViewById<EditText>(R.id.editTextUsername).text.toString()
             val userEmail = findViewById<EditText>(R.id.editTextUserEmail).text.toString()
             val userPassword = findViewById<EditText>(R.id.editTextUserPassword).text.toString()
-            val userPasswordConfirm = findViewById<EditText>(R.id.editTextUserPasswordComfirm).text.toString()
+            val userPasswordConfirm = findViewById<EditText>(R.id.editTextUserPasswordConfirm).text.toString()
 
             if(userEmail.isNotEmpty() && userPassword.isNotEmpty() && userName.isNotEmpty() &&
                 userPasswordConfirm.isNotEmpty()) {
@@ -36,17 +36,18 @@ class SignupActivity : AppCompatActivity() {
                     Toast.makeText(this, "비밀번호는 6자리 이상 12자리 이하로 입력해 주세요.", Toast.LENGTH_SHORT).show()
                 }
 
-                if(userPassword.equals(userPasswordConfirm)) {
+                if(userPassword == userPasswordConfirm) {
                     doSignup(userEmail, userPassword, userName)
+                    //updateProfile(userName)
                 }
                 else {
                     Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
                 }
-                updateProfile(userName)
-                val user = Firebase.auth.currentUser
-                if (user != null) {
-                    println("###########${user.displayName}")
-                }
+                //updateProfile(userName)
+//                val user = Firebase.auth.currentUser
+//                if (user != null) {
+//                    println("###########${user.displayName}")
+//                }
             }
             else {
                 Toast.makeText(this, "모든 정보를 입력해 주세요.", Toast.LENGTH_SHORT).show()
@@ -72,7 +73,8 @@ class SignupActivity : AppCompatActivity() {
                         userName = userName,
                         profileImage = "https://firebasestorage.googleapis.com/v0/b/snsproject-638d2.appspot.com/o/images%2Fprofile_images%2Fjeong.png?alt=media&token=11f05012-c31e-46b5-8d17-b21677cf7c67",
                         followers = HashMap(),
-                        following = HashMap()
+                        following = HashMap(),
+                        chat = HashMap()
                     )
 
                     FirebaseFirestore.getInstance().collection("user")

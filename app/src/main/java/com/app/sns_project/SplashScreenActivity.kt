@@ -22,11 +22,12 @@ class SplashScreenActivity : AppCompatActivity() {
             delay(1000)
 
             //이미 로그인한 사용자가 있으면 Main액티비티로 이동
-            if(currentUid==null){
-                startActivity(Intent(this@SplashScreenActivity, LoginActivity::class.java))
-            }else{
-                startActivity(Intent(this@SplashScreenActivity, MainActivity::class.java))
-            }
+            startActivity(Intent(this@SplashScreenActivity, LoginActivity::class.java))
+//            if(currentUid==null){
+//                startActivity(Intent(this@SplashScreenActivity, LoginActivity::class.java))
+//            }else{
+//                startActivity(Intent(this@SplashScreenActivity, MainActivity::class.java))
+//            }
             finish()
         }
 
