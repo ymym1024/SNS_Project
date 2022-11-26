@@ -1,6 +1,7 @@
 package com.app.sns_project.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -16,11 +18,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.DTO.UserDTO
+import com.app.sns_project.LoginActivity
 import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentProfileBinding
 import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -74,6 +78,7 @@ class ProfileFragment : Fragment() {
 
         getProfileInfo()
         goUpdateProfile(uid)
+        logOut()
 
         return binding.root
     }
@@ -81,6 +86,13 @@ class ProfileFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         getPostImage()
+    }
+
+    private fun logOut() {
+        binding.logoutBtn.setOnClickListener {
+            Toast.makeText(context, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(activity, LoginActivity::class.java))
+        }
     }
 
     private fun goUpdateProfile(uid:String){
