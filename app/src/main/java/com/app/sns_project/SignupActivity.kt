@@ -28,7 +28,7 @@ class SignupActivity : AppCompatActivity() {
             val userName = findViewById<EditText>(R.id.editTextUsername).text.toString()
             val userEmail = findViewById<EditText>(R.id.editTextUserEmail).text.toString()
             val userPassword = findViewById<EditText>(R.id.editTextUserPassword).text.toString()
-            val userPasswordConfirm = findViewById<EditText>(R.id.editTextUserPasswordComfirm).text.toString()
+            val userPasswordConfirm = findViewById<EditText>(R.id.editTextUserPasswordConfirm).text.toString()
 
             if(userEmail.isNotEmpty() && userPassword.isNotEmpty() && userName.isNotEmpty() &&
                 userPasswordConfirm.isNotEmpty()) {
@@ -72,7 +72,8 @@ class SignupActivity : AppCompatActivity() {
                         userName = userName,
                         profileImage = "https://firebasestorage.googleapis.com/v0/b/snsproject-638d2.appspot.com/o/images%2Fprofile_images%2Fjeong.png?alt=media&token=11f05012-c31e-46b5-8d17-b21677cf7c67",
                         followers = HashMap(),
-                        following = HashMap()
+                        following = HashMap(),
+                        chat = HashMap()
                     )
 
                     FirebaseFirestore.getInstance().collection("user")
