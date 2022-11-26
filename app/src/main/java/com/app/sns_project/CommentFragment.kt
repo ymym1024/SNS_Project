@@ -36,8 +36,8 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
            binding = CommentFragmentBinding.inflate(inflater, container, false)
 
         Log.d("onCreateView", "zzz")
-        val args:CommentFragmentArgs by navArgs()
-        contentUid = args.contentId
+       // val args:CommentFragmentArgs by navArgs()
+      //  contentUid = args.contentId
         Log.d("contentUid in onCreateView", contentUid!!)
 
         return binding.root
@@ -90,8 +90,8 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
             commentEditText.setText("")
             FirebaseFirestore.getInstance().collection("post").document(contentUid!!)
                 .get().addOnSuccessListener {
-                    Log.d("PostUserName", it.get("userName").toString())
-                    commentAlarm(it.get("userName").toString())
+                    Log.d("PostUserName", it.get("uid").toString())
+                    commentAlarm(it.get("uid").toString())
                 }
             commentLoading()
             //myAdapter.notifyDataSetChanged()
