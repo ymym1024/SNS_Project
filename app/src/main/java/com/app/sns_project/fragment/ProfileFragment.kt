@@ -2,6 +2,7 @@ package com.app.sns_project.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -31,6 +33,9 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
@@ -81,6 +86,17 @@ class ProfileFragment : Fragment() {
         logOut()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val chattingButton = binding.userChattingBtn
+        chattingButton.setOnClickListener {
+            Log.e("check:","chatting button clicked, username: ${binding.userProfileName.text}")
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToChatRoomFragment(binding.userProfileName.text.toString()))
+
+        }
     }
 
     override fun onResume() {

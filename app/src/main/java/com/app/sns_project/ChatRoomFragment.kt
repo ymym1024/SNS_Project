@@ -30,10 +30,10 @@ class ChatRoomFragment : Fragment() {
     val db = Firebase.firestore
 
     // 현재 로그인한 user의 uid
-//    val currentUid = Firebase.auth.currentUser?.uid.toString()
-    val currentUid = "uid1"
+    val currentUid = Firebase.auth.currentUser?.uid.toString()
+//    val currentUid = "uid1"
     // user Collection Ref
-    val userColRef = db.collection("test")
+    val userColRef = db.collection("user")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +57,7 @@ class ChatRoomFragment : Fragment() {
         val editTextSendMessage = view.findViewById<EditText>(R.id.editTextSendMessage)
 
         // 채팅방 받아오기
-        readChatRoom()
+        readChatRoom(chatUserName)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         val adapter = ChatRoomRecyclerViewAdapter(viewModel, context)
@@ -99,6 +99,8 @@ class ChatRoomFragment : Fragment() {
                         val specificChat = chatMap.get(chatUserName) as MutableMap<String,Map<*,*>> // 특정 상대와의 채팅내용 // 맵의 키가 Long일 수 없어서 String으로 넣음
                         val tempMap = mutableMapOf<String,String>(it["userName"].toString() to editTextSendMessage.text.toString()) // 내가 메세지 보내는거
                         specificChat.put(currentTimeMillis().toString(),tempMap)
+                        // <issue> <해결됨> 현재시간이 제대로 저장되지 않는 버그 있음
+                        Log.e("current time:",currentTimeMillis().toString())
                         chatMap.put(chatUserName,specificChat)
 
                         userColRef.document(currentUid)
@@ -133,24 +135,24 @@ class ChatRoomFragment : Fragment() {
 //            Log.d("change","${snapshot?.id} ${snapshot?.data}")
             val chatRoomFragment = ChatRoomFragment()
             if(snapshot?.data?.contains("chat") == true) { // 로직 불완전함
-                readChatRoom()
+                readChatRoom(chatUserName)
             }
         }
 
     }
 
-    fun readChatRoom() {
-        val args: ChatRoomFragmentArgs by navArgs()
-        val chatUserName = args.chatUserName
+    fun readChatRoom(chatUserName: String) {
+//        val args: ChatRoomFragmentArgs by navArgs()
+//        val chatUserName = args.chatUserName
         userColRef.document(currentUid).get()
             .addOnSuccessListener {
                 viewModel.deleteAllChatItem()
                 // 채팅방 출력하는 부분
-                val chatMap = it["chat"] as MutableMap<String, *>
-                if (chatMap.isNotEmpty()) {
+                val chatMap = it["chat"] as MutableMap<String, Map<*,*>>
+                if (chatMap.isNotEmpty() && chatMap.containsKey(chatUserName)) {
                     val tempSpecificChat = chatMap.get(chatUserName) as MutableMap<String, *>
                     val specificChat = tempSpecificChat.toSortedMap()
-                    if (specificChat.isNotEmpty()) { // 채팅이 하나라도 있으면(채팅방이 존재하는 이상 반드시 있긴함)
+                    if (specificChat.isNotEmpty()) { // 채팅이 하나라도 있으면
                         for ((key, value) in specificChat) {
                             val tempMap = value as MutableMap<String, String>
                             for ((key2, value2) in tempMap) {
@@ -164,6 +166,15 @@ class ChatRoomFragment : Fragment() {
                             }
                         }
                     }
+                }
+                else{
+                    val emptyMap = mutableMapOf<String,Map<*,*>>()
+                    chatMap.put(chatUserName,emptyMap)
+
+                    userColRef.document(currentUid)
+                        .update("chat", chatMap) // 내 firestore 'chat' 필드 update
+
+                    readChatRoom(chatUserName)
                 }
             }
     }

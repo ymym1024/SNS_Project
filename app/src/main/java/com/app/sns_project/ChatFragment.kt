@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -38,10 +39,10 @@ class ChatFragment : Fragment() {
     val db = Firebase.firestore
 
     // 현재 로그인한 user의 uid
-//    val currentUid = Firebase.auth.currentUser?.uid.toString()
-    val currentUid = "uid1"
+    val currentUid = Firebase.auth.currentUser?.uid.toString()
+//    val currentUid = "uid1"
     // user Collection Ref
-    val userColRef = db.collection("test")
+    val userColRef = db.collection("user")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,12 +66,12 @@ class ChatFragment : Fragment() {
                 val chatMap = it["chat"] as MutableMap<String, *>
                 if (chatMap.isNotEmpty()) {
                     for ((key, value) in chatMap) {
-                        userColRef.whereEqualTo("userName", key.toString()).get()
+                        userColRef.whereEqualTo("userName", key).get()
                             .addOnSuccessListener {
                                 for (doc in it) {
                                     val tempSpecificChat = value as MutableMap<String, *>
                                     if(tempSpecificChat.isNotEmpty()) { // 채팅이 하나라도 있으면
-                                        val specificChat = tempSpecificChat.toSortedMap() // 시간순으로 정렬
+                                        val specificChat = tempSpecificChat.toSortedMap() // 키값(시간)순으로 정렬
                                         var tempMap = mutableMapOf<String, String>()
                                         for ((key2, value2) in specificChat) {
                                             tempMap = value2 as MutableMap<String, String> // 마지막 채팅 표시하기 위함
