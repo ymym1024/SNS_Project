@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.app.sns_project.databinding.CommentFragmentBinding
 import com.app.sns_project.util.pushMessage
+import com.google.android.material.snackbar.Snackbar
 
 class CommentFragment : Fragment() { //R.layout.comment_fragment
 
@@ -39,13 +40,6 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
         contentUid = args.contentId
         Log.d("contentUid in onCreateView", contentUid!!)
 
-//        val commentRecyclerView = binding.commentRecyclerview
-//        myAdapter = CommentFragment().CommentRecyclerviewAdapter(comments, contentUid)
-//        commentRecyclerView.adapter = myAdapter
-//        //commentRecyclerView.adapter  = CommentFragment().CommentRecyclerviewAdapter()
-//        commentRecyclerView.layoutManager = LinearLayoutManager(context) // activity?
-//        commentRecyclerView.setHasFixedSize(true)
-
         return binding.root
         //return v
     }
@@ -62,27 +56,36 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
         val commentSendButton = binding.commentSendButton
         var name : String? = null
         commentSendButton.setOnClickListener {
+            //commentLoading()
             var comment = ContentDTO.Comment()
             comment.userId = FirebaseAuth.getInstance().currentUser?.email
             comment.uid = FirebaseAuth.getInstance().currentUser?.uid
-            //comment.userName = FirebaseAuth.getInstance().currentUser?.displayName // 유저 이름
-            FirebaseFirestore.getInstance().collection("user")
-                .document(comment.uid!!)
-                .get().addOnSuccessListener { document ->
-                    if (document != null) {
-                        comment.userName = document.get("userName").toString() // ??null??
-                        Log.d("userName", comment.userName!!)
-                        myAdapter.notifyDataSetChanged()
-                    } else {
-                        Log.d(TAG, "No such document")
-                    }
-                    FirebaseFirestore.getInstance().collection("post").document(contentUid!!)
-                        .collection("comments").document().set(comment)
-                }
             val commentEditText = binding.commentEditText
             comment.comment = commentEditText.text.toString()
             comment.timestamp = System.currentTimeMillis()
-
+            Log.d("comment => ", comment.comment!!)
+            if(comment.comment == null || comment.comment == "") {
+                Snackbar.make(binding.root, "댓글을 입력해 주세요", Snackbar.LENGTH_SHORT).show()
+            }
+            else if(comment.comment!!.length > 100) {
+                Snackbar.make(binding.root, "100자 이하의 댓글을 입력해 주세요", Snackbar.LENGTH_SHORT).show()
+            }
+            else {
+                FirebaseFirestore.getInstance().collection("user")
+                    .document(comment.uid!!)
+                    .get().addOnSuccessListener { document ->
+                        if (document != null) {
+                            comment.userName = document.get("userName").toString() // ??null??
+                            Log.d("userName", comment.userName!!)
+                            myAdapter.notifyDataSetChanged()
+                        } else {
+                            Log.d(TAG, "No such document")
+                        }
+                        FirebaseFirestore.getInstance().collection("post").document(contentUid!!)
+                            .collection("comments").document().set(comment)
+                        myAdapter.notifyDataSetChanged()
+                    }
+            }
 
             commentEditText.setText("")
             FirebaseFirestore.getInstance().collection("post").document(contentUid!!)
@@ -90,7 +93,8 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                     Log.d("PostUserName", it.get("userName").toString())
                     commentAlarm(it.get("userName").toString())
                 }
-
+            commentLoading()
+            //myAdapter.notifyDataSetChanged()
         }
 
         val userName = binding.commentViewUserName
@@ -111,9 +115,6 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                     }catch (e : Exception){
                         Log.d("ddd", "ddd")
                         userImageContent.visibility=View.GONE
-//                        val urlException = "https://firebasestorage.googleapis.com/v0/b/snsproject-638d2.appspot.com/o/images%2Fprofile_images%2Fwhite2.jpeg?alt=media&token=14c0cba4-78f1-4b3c-b7d6-b24fc105d3c1"
-//                        Glide.with(this).load(urlException).apply(RequestOptions())
-//                            .into(userImageContent)
                     }
                 } else {
                     Log.d(TAG, "No such document")
@@ -131,8 +132,6 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
             }
-        println("kkkkkkkkkk")
-
     }
 
 //    private fun logOut() {
@@ -161,6 +160,7 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
 
     private fun commentLoading(){
         setAdapter()
+        myAdapter.notifyDataSetChanged()
         println("in init $contentUid")
         Log.d("contentUid in init", contentUid!!)
         Log.d("in inner class init", "ok")
@@ -236,20 +236,23 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                             .into(view.findViewById(R.id.commentViewProfile))
                     }
                 }
-
+            Log.d("----------", "onBindViewHolder")
             val deleteButton = view.findViewById<ImageButton>(R.id.deleteButton)
             Log.d("commentDocId.size", commentDoc.size.toString())
-            val commUid = commentDoc[position]
+            var commUid = commentDoc[position]
             FirebaseFirestore.getInstance().collection("post")
                 .document(contentUid!!)
                 .collection("comments")
                 .document(commUid)
                 .get()
                 .addOnSuccessListener {
-                    val cUid = it.get("uid")
+                    var cUid = it.get("uid")
                     Log.d("cUid", cUid.toString())
                     if(cUid != FirebaseAuth.getInstance().currentUser?.uid){
                         deleteButton.visibility = View.GONE
+                    }
+                    else if(cUid == FirebaseAuth.getInstance().currentUser?.uid){
+                        deleteButton.visibility = View.VISIBLE
                     }
                 }
 
@@ -258,7 +261,6 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
 //                comments.removeAt(position)
 //                notifyItemRemoved(position)
 //                notifyItemRangeChanged(position, comments.size)
-                //notifyDataSetChanged()
                 val commentDocId = commentDoc[position]
                 Log.d("commentDocId -> ", commentDocId)
                 FirebaseFirestore.getInstance().collection("post")
@@ -267,10 +269,11 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
                     .document(commentDocId)
                     .delete()
                     .addOnSuccessListener {
-                        notifyDataSetChanged()
+//                        notifyDataSetChanged()
                         Log.d("delete", "completed")
                     }
-
+                notifyItemRemoved(position)
+                //notifyDataSetChanged()
             }
         }
 
