@@ -214,7 +214,7 @@ class ProfileFragment : Fragment() {
             holder.postTime.text = convertTimestampToDate(itemList[position].timestamp!!)
 
             //user 이미지 -> 내계정조회
-            Glide.with(holder.userImage.context).load(imageUrl).into(holder.userImage)
+            Glide.with(holder.userImage.context).load(imageUrl).apply(RequestOptions().centerCrop()).into(holder.userImage)
 
             if(itemList[position].imageUrl?.isEmpty()!!){
                 holder.postImageList.visibility = View.GONE
