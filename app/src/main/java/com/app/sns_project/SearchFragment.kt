@@ -10,13 +10,13 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.*
 import androidx.navigation.fragment.navArgs
+import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
-
 
 class SearchFragment() : Fragment() {
     private val viewModel by viewModels<MyViewModel>()
@@ -112,6 +112,8 @@ class SearchFragment() : Fragment() {
                         followUser(doc["userName"].toString(),doc["profileImage"].toString())
                         followButton.visibility = View.INVISIBLE
                         followingButton.visibility = View.VISIBLE
+                        // 알림 보내기
+                        alarmFollow(doc["userName"].toString())
                     }
                 }
         }
@@ -147,5 +149,20 @@ class SearchFragment() : Fragment() {
                         }
                     }
             }
+    }
+
+    private fun alarmFollow(followUsername: String){
+        userColRef.document(currentUid).get().addOnSuccessListener {
+            val userName = it["userName"] as String
+
+            Log.d("userName",userName)
+            var message = String.format("%s 님이 회원님을 팔로우합니다.",userName)
+            userColRef.whereEqualTo("userName",followUsername).get()
+                .addOnSuccessListener {
+                    for (doc in it){
+                        pushMessage()?.sendMessage(doc.id, "알림 메세지 입니다.", message)
+                    }
+                }
+        }
     }
 }

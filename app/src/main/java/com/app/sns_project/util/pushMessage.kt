@@ -1,5 +1,6 @@
 package com.app.sns_project.util
 
+import android.util.Log
 import com.app.sns_project.DTO.PushMessageDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -53,8 +54,9 @@ class pushMessage {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             var pushToken = ""
             if(task.isSuccessful){
-                pushToken = task.result?:""
+                pushToken = task.result?: ""
             }
+            Log.d("pushToken",pushToken)
             var uid = FirebaseAuth.getInstance().currentUser?.uid
             var map = mutableMapOf<String,Any>()
             map["pushtoken"] = pushToken!!

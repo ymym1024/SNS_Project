@@ -3,22 +3,19 @@ package com.app.sns_project.fragment
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.DTO.UserDTO
-import com.app.sns_project.ItemPagerAdapter
 import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentProfileBinding
 import com.app.sns_project.util.pushMessage
@@ -27,6 +24,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.text.SimpleDateFormat
 
@@ -39,6 +37,7 @@ class ProfileFragment : Fragment() {
     private val postIdList : ArrayList<String> = ArrayList()
 
     private var uid = ""
+    private var userName = ""
     private var imageUrl = ""
 
     var profileListener : ListenerRegistration?=null
@@ -46,16 +45,35 @@ class ProfileFragment : Fragment() {
     var followerListener : ListenerRegistration?=null
     var postListener : ListenerRegistration?=null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
+
+        val bundle = arguments
+
+        if (bundle != null) {
+            uid = bundle.getString("uid", "")
+        }else{
+            uid = auth.currentUser!!.uid
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        firestore = FirebaseFirestore.getInstance()
-        auth = FirebaseAuth.getInstance()
-        uid = auth.currentUser!!.uid
+
+        //사용자일땐 로그아웃. 프로필 수정 버튼 보이도록 수정
+        if(uid.equals(auth.currentUser!!.uid)){
+            binding.followerInfo.visibility = View.GONE
+        }else{
+            binding.myInfo.visibility = View.GONE
+        }
 
         getProfileInfo()
+        goUpdateProfile(uid)
 
         return binding.root
     }
@@ -65,10 +83,16 @@ class ProfileFragment : Fragment() {
         getPostImage()
     }
 
+    private fun goUpdateProfile(uid:String){
+        binding.profileUpdateBtn.setOnClickListener {
+            val directions = ProfileFragmentDirections.actionProfileFragmentToProfileUpdateFragment(uid)
+            findNavController().navigate(directions)
+        }
+    }
     private fun getPostImage(){
         val contentDTO : ArrayList<PostDTO> = ArrayList()
 
-        postListener = firestore?.collection("post").whereEqualTo("uid",auth.currentUser?.uid!!).addSnapshotListener { value, error ->
+        postListener = firestore?.collection("post").whereEqualTo("uid",uid).orderBy("timestamp", Query.Direction.DESCENDING).addSnapshotListener { value, error ->
             contentDTO.clear()
 
             if (value == null) return@addSnapshotListener
@@ -78,7 +102,6 @@ class ProfileFragment : Fragment() {
                 postIdList.add(v.id)
             }
             binding.userPostTextview.text = contentDTO.size.toString()
-            //binding.imageRecylcerview.adapter = GridImageRecyclerViewAdatper(requireActivity(),contentDTO)
             binding.imageRecylcerview.adapter = RecyclerViewAdapter(contentDTO)
             binding.imageRecylcerview.layoutManager = LinearLayoutManager(context)
             binding.imageRecylcerview.setHasFixedSize(true)
@@ -86,14 +109,23 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getProfileInfo(){
-        val uid = auth.currentUser!!.uid
         //profile image
+
         profileListener = firestore.collection("user").document(uid).addSnapshotListener { value, error ->
-            if(value?.data!=null){
-                imageUrl = value?.data!!["profileImage"] as String
-                val userName = value?.data!!["userName"].toString()
-                Glide.with(requireContext()).load(imageUrl).apply(RequestOptions().centerCrop()).into(binding.userImageImageView)
-                binding.userProfileName.text = userName
+            FirebaseFirestore.getInstance().collection("user").document(auth.currentUser!!.uid).get().addOnSuccessListener {
+                userName = it.data!!["userName"] as String
+
+                if(value?.data!=null){
+                    imageUrl = value?.data!!["profileImage"] as String
+                    val um = value?.data!!["userName"].toString()
+                    Glide.with(requireContext()).load(imageUrl).apply(RequestOptions().centerCrop()).into(binding.userImageImageView)
+                    binding.userProfileName.text = um
+                    val list = value?.data!!["following"] as MutableMap<String,String>
+                    Log.d("userName",userName)
+                    if(!list.containsKey(userName)){
+                        binding.userFollowingBtn.isEnabled = true
+                    }
+                }
             }
         }
 
@@ -144,7 +176,6 @@ class ProfileFragment : Fragment() {
             val postIndicator : DotsIndicator = itemView.findViewById(R.id.post_image_indicator)
             val postFavoriteCnt : TextView = itemView.findViewById(R.id.post_favorite_cnt)
             val postFavorite : ImageView = itemView.findViewById(R.id.post_favorite)
-            val postMenu : Button = itemView.findViewById(R.id.post_menu)
             val postComment : ImageView = itemView.findViewById(R.id.comment_button)
         }
 
@@ -174,9 +205,6 @@ class ProfileFragment : Fragment() {
                 holder.postFavoriteCnt.text = "좋아요 ${itemList[position].favoriteCount}개"
             }else{
                 holder.postFavoriteCnt.text = ""
-            }
-            if(!itemList[position].uid.equals(auth.currentUser?.uid)) {
-                holder.postMenu.visibility = View.INVISIBLE
             }
 
             //좋아요 버튼 상태값 변경
@@ -228,7 +256,7 @@ class ProfileFragment : Fragment() {
         }
 
         private fun alarmFavorite(postUseruid:String){
-            firestore.collection("user").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
+            firestore.collection("user").document(uid).get().addOnSuccessListener {
                 val userName = it["userName"] as String
 
                 Log.d("userName",userName)
