@@ -82,7 +82,7 @@ class ProfileFragment : Fragment() {
         }
 
         getProfileInfo()
-        goUpdateProfile(uid)
+        //goUpdateProfile(uid)
         logOut()
 
         return binding.root
@@ -110,13 +110,13 @@ class ProfileFragment : Fragment() {
             startActivity(Intent(activity, LoginActivity::class.java))
         }
     }
-
-    private fun goUpdateProfile(uid:String){
-        binding.profileUpdateBtn.setOnClickListener {
-            val directions = ProfileFragmentDirections.actionProfileFragmentToProfileUpdateFragment(uid)
-            findNavController().navigate(directions)
-        }
-    }
+//
+//    private fun goUpdateProfile(uid:String){
+//        binding.profileUpdateBtn.setOnClickListener {
+//            val directions = ProfileFragmentDirections.actionProfileFragmentToProfileUpdateFragment(uid)
+//            findNavController().navigate(directions)
+//        }
+//    }
     private fun getPostImage(){
         val contentDTO : ArrayList<PostDTO> = ArrayList()
 

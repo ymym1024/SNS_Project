@@ -36,8 +36,8 @@ class CommentFragment : Fragment() { //R.layout.comment_fragment
            binding = CommentFragmentBinding.inflate(inflater, container, false)
 
         Log.d("onCreateView", "zzz")
-        val args:CommentFragmentArgs by navArgs()
-        contentUid = args.contentId
+       // val args:CommentFragmentArgs by navArgs()
+      //  contentUid = args.contentId
         Log.d("contentUid in onCreateView", contentUid!!)
 
         return binding.root
