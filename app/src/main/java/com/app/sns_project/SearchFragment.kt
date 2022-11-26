@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.*
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
@@ -100,6 +101,18 @@ class SearchFragment() : Fragment() {
                                     }
                             }
 
+                    }
+                }
+        }
+
+        profileImage.setOnClickListener {
+            userColRef.whereEqualTo("userName", searchName).get()
+                .addOnSuccessListener {
+                    for (doc in it) {
+                        val bundle = Bundle()
+                        bundle.putString("uid", doc.id)
+                        bundle.putString("userName", doc["userName"].toString())
+                        findNavController().navigate(R.id.action_searchFragment_to_profileFragment, bundle)
                     }
                 }
         }

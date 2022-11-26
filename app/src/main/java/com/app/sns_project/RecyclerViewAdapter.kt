@@ -3,12 +3,15 @@ package com.app.sns_project
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
@@ -18,7 +21,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
 
-class RecyclerViewAdapter(private val viewModel: MyViewModel, val context: Context?):
+class RecyclerViewAdapter(private val viewModel: MyViewModel, val context: Context?, val fragment: Fragment):
     RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewViewHolder>() {
 
 
@@ -108,6 +111,20 @@ class RecyclerViewAdapter(private val viewModel: MyViewModel, val context: Conte
 
                 // <issue> <해결됨> fragment 업데이트는 어케?
                 //팔로잉/팔로우 목록 업데이트 하는거 콜백함수로 불러줘야겠는데 일단 뷰모델로 해결
+            }
+
+            profileImage.setOnClickListener {
+                val index = adapterPosition
+                val clickedUser = viewModel.items[index] // 현재 로그인한 user의 팔로워 목록에서 클릭당한 user
+                userColRef.whereEqualTo("userName", clickedUser.username).get()
+                    .addOnSuccessListener {
+                        for (doc in it) {
+                            val bundle = Bundle()
+                            bundle.putString("uid", doc.id)
+                            bundle.putString("userName", doc["userName"].toString())
+                            fragment.findNavController().navigate(R.id.action_FollowFragment_to_profileFragment, bundle)
+                        }
+                    }
             }
         }
 
