@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.app.sns_project.DTO.PostDTO
 import com.app.sns_project.R
+import com.app.sns_project.SearchFragmentArgs
 import com.app.sns_project.databinding.FragmentMainBinding
 import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
@@ -205,8 +206,10 @@ class MainFragment : Fragment() {
                 val userName = it["userName"] as String
 
                 Log.d("userName",userName)
-                var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
-                pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
+                if(!postUseruid.equals(userName)){
+                    var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
+                    pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
+                }
             }
         }
     }

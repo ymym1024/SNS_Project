@@ -150,9 +150,6 @@ class ProfileFragment : Fragment() {
                     binding.userProfileName.text = um
                     val list = value?.data!!["following"] as MutableMap<String,String>
                     Log.d("userName",userName)
-                    if(!list.containsKey(userName)){
-                        binding.userFollowingBtn.isEnabled = true
-                    }
                 }
             }
         }
@@ -284,12 +281,14 @@ class ProfileFragment : Fragment() {
         }
 
         private fun alarmFavorite(postUseruid:String){
-            firestore.collection("user").document(uid).get().addOnSuccessListener {
+            firestore.collection("user").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
                 val userName = it["userName"] as String
 
                 Log.d("userName",userName)
-                var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
-                pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
+                if(!postUseruid.equals(userName)){
+                    var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
+                    pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
+                }
             }
         }
     }
