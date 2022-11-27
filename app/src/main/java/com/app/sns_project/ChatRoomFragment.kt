@@ -63,9 +63,11 @@ class ChatRoomFragment : Fragment() {
         val adapter = ChatRoomRecyclerViewAdapter(viewModel, context)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.scrollToPosition(adapter.itemCount-1)
 
         viewModel.chatItemsListData.observe(viewLifecycleOwner){
             adapter.notifyDataSetChanged()
+            recyclerView.scrollToPosition(adapter.itemCount-1)
         }
 
 
@@ -136,6 +138,7 @@ class ChatRoomFragment : Fragment() {
             val chatRoomFragment = ChatRoomFragment()
             if(snapshot?.data?.contains("chat") == true) { // 로직 불완전함
                 readChatRoom(chatUserName)
+                recyclerView.scrollToPosition(adapter.itemCount-1)
             }
         }
 
