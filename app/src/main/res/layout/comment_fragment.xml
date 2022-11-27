@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CommentActivity">
+
+
+<!--    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        android:id="@+id/linear"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp">-->
+<!--        <ImageView-->
+<!--            android:id="@+id/commentViewProfile"-->
+<!--            android:layout_margin="7dp"-->
+<!--            android:layout_width="35dp"-->
+<!--            android:layout_height="35dp">-->
+<!--        </ImageView>-->
+<!--        <TextView-->
+<!--            android:id="@+id/commentViewUserName"-->
+<!--            android:text="UserID"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_margin="7dp"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content">-->
+
+<!--        </TextView>-->
+<!--    </LinearLayout>-->
+    <LinearLayout
+        android:id="@+id/linear"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/postViewProfile"
+            android:layout_margin="7dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp">
+        </ImageView>
+        <TextView
+            android:id="@+id/commentViewUserName"
+            android:text="UserName"
+            android:textStyle="bold"
+            android:layout_margin="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/myImg"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@+id/linear">
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/myText"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/myImg">
+
+    </TextView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/image_division"
+        android:layout_below="@+id/myText"
+        android:background="@color/blue_01_main"
+        android:layout_width="match_parent"
+        android:layout_height="1dp">
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/image_division"
+        android:id="@+id/commentRecyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/commentSendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/commentRecyclerview"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="SEND"></Button>
+
+    <EditText
+        android:id="@+id/commentEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/commentRecyclerview"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toStartOf="@+id/commentSendButton"
+        android:layout_toLeftOf="@+id/commentSendButton"
+        android:hint="add Comment!"
+        android:minHeight="48dp"></EditText>
+
+</RelativeLayout>

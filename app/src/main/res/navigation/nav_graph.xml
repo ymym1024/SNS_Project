@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.app.sns_project.fragment.MainFragment"
+        android:label="홈"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postAddFragment"
+        android:name="com.app.sns_project.fragment.PostAddFragment"
+        android:label="새 게시물"
+        tools:layout="@layout/fragment_post_add" >
+        <action
+            android:id="@+id/action_postAddFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_postAddFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/postUpdateFragment"
+        android:name="com.app.sns_project.fragment.PostUpdateFragment"
+        android:label="게시물 수정"
+        tools:layout="@layout/fragment_post_update">
+        <argument
+            android:name="postId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_postUpdateFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/FollowFragment"
+        android:name="com.app.sns_project.FollowFragment"
+        android:label="친구"
+        tools:layout="@layout/fragment_follow">
+        <action
+            android:id="@+id/action_FollowFragment_to_searchFragment"
+            app:popUpTo="@+id/searchFragment"
+            app:popUpToInclusive="false"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_FollowFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.app.sns_project.SearchFragment"
+        android:label="검색"
+        tools:layout="@layout/fragment_search">
+        <argument android:name="searchName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_searchFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ChatFragment"
+        android:name="com.app.sns_project.ChatFragment"
+        android:label="채팅"
+        tools:layout="@layout/fragment_chat" >
+        <action
+            android:id="@+id/action_ChatFragment_to_ChatRoomFragment"
+            app:destination="@id/ChatRoomFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ChatRoomFragment"
+        android:name="com.app.sns_project.ChatRoomFragment"
+        android:label="채팅방"
+        tools:layout="@layout/fragment_chatroom" >
+        <argument android:name="chatUserName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.app.sns_project.fragment.ProfileFragment"
+        android:label="프로필"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_profileUpdateFragment"
+            app:destination="@id/profileUpdateFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_ChatRoomFragment"
+            app:destination="@id/ChatRoomFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.app.sns_project.fragment.DetailFragment"
+        android:label="게시물">
+        <argument
+            android:name="postId"
+            app:argType="string" />
+        <argument
+            android:name="postUser"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_detailFragment_to_postUpdateFragment"
+            app:destination="@id/postUpdateFragment" />
+        <action
+            android:id="@+id/action_detailFragment_to_bottomSheetFragment"
+            app:destination="@id/bottomSheetFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/bottomSheetFragment"
+        android:name="com.app.sns_project.fragment.BottomSheetFragment"
+        android:label="fragment_bottom_sheet"
+        tools:layout="@layout/fragment_bottom_sheet" >
+        <action
+            android:id="@+id/action_bottomSheetFragment_to_postUpdateFragment"
+            app:destination="@id/postUpdateFragment" />
+        <argument
+            android:name="postId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_bottomSheetFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpToInclusive="true"/>
+    </dialog>
+    <fragment
+        android:id="@+id/profileUpdateFragment"
+        android:name="com.app.sns_project.fragment.ProfileUpdateFragment"
+        android:label="프로필 수정"
+        tools:layout="@layout/fragment_profile_update" >
+        <argument
+            android:name="uid"
+            app:argType="string" />
+    </fragment>
+
+
+</navigation>

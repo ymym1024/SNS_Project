@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mainFragment"
+        android:icon="@drawable/ic_home_icon"
+        android:title="홈"/>
+    <item
+        android:id="@+id/FollowFragment"
+        android:icon="@drawable/ic_group_icon"
+        android:title="친구"/>
+    <item
+        android:id="@+id/postAddFragment"
+        android:icon="@drawable/ic_add_icon"
+        android:title="새 게시물"/>
+    <item
+        android:id="@+id/ChatFragment"
+        android:icon="@drawable/ic_chat_icon"
+        android:title="채팅"/>
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/ic_profile_icon"
+        android:title="계정"/>
+</menu>
