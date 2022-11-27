@@ -36,11 +36,11 @@ class SignupActivity : AppCompatActivity() {
                     Toast.makeText(this, "비밀번호는 6자리 이상 12자리 이하로 입력해 주세요.", Toast.LENGTH_SHORT).show()
                 }
 
-                if(userPassword == userPasswordConfirm) {
+                if((userPassword == userPasswordConfirm) && userPassword.length < 13 && userPassword.length >= 6) {
                     doSignup(userEmail, userPassword, userName)
                     //updateProfile(userName)
                 }
-                else {
+                else if(userPassword != userPasswordConfirm) {
                     Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
                 }
                 //updateProfile(userName)
