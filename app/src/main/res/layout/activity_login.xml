@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="96dp"
-        android:text="App Title"
+        android:text="Spread"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,23 +36,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="70dp"
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:textSize="15dp"
         app:errorEnabled="true"
         app:hintEnabled="true"
-        app:layout_constraintWidth_percent="0.7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AppTitle">
+        app:layout_constraintTop_toBottomOf="@+id/AppTitle"
+        app:layout_constraintWidth_percent="0.7">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextEmail"
-            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:hint="Email" />
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!--    <com.google.android.material.textfield.TextInputLayout-->
@@ -118,11 +118,11 @@
         android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/button_blue"
         android:text="로그인"
-        android:textStyle="bold"
         android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_textview"
@@ -133,7 +133,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="128dp"
+        android:layout_marginBottom="80dp"
         android:text="아직 회원이 아니신가요?"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -143,11 +143,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="108dp"
+        android:layout_marginBottom="70dp"
         android:background="@drawable/button_blue"
         android:text="회원가입"
-        android:textStyle="bold"
         android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
