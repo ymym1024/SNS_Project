@@ -206,7 +206,7 @@ class MainFragment : Fragment() {
                 val userName = it["userName"] as String
 
                 Log.d("userName",userName)
-                if(!postUseruid.equals(userName)){
+                if(!postUseruid.equals(FirebaseAuth.getInstance().currentUser!!.uid)){
                     var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
                     pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
                 }
