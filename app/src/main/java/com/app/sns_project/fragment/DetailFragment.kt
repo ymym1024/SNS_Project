@@ -246,8 +246,10 @@ class DetailFragment : Fragment() {
             val userName = it["userName"] as String
 
             Log.d("userName",userName)
-            var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
-            pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
+            if(!postUseruid.equals(userName)){
+                var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
+                pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
+            }
         }
     }
 
