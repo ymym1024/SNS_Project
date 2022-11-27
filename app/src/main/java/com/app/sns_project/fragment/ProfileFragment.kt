@@ -82,7 +82,7 @@ class ProfileFragment : Fragment() {
         }
 
         getProfileInfo()
-        goUpdateProfile(uid)
+        //goUpdateProfile(uid)
         logOut()
 
         return binding.root
@@ -110,13 +110,13 @@ class ProfileFragment : Fragment() {
             startActivity(Intent(activity, LoginActivity::class.java))
         }
     }
-
-    private fun goUpdateProfile(uid:String){
-        binding.profileUpdateBtn.setOnClickListener {
-            val directions = ProfileFragmentDirections.actionProfileFragmentToProfileUpdateFragment(uid)
-            findNavController().navigate(directions)
-        }
-    }
+//
+//    private fun goUpdateProfile(uid:String){
+//        binding.profileUpdateBtn.setOnClickListener {
+//            val directions = ProfileFragmentDirections.actionProfileFragmentToProfileUpdateFragment(uid)
+//            findNavController().navigate(directions)
+//        }
+//    }
     private fun getPostImage(){
         val contentDTO : ArrayList<PostDTO> = ArrayList()
 
@@ -214,7 +214,7 @@ class ProfileFragment : Fragment() {
             holder.postTime.text = convertTimestampToDate(itemList[position].timestamp!!)
 
             //user 이미지 -> 내계정조회
-            Glide.with(holder.userImage.context).load(imageUrl).into(holder.userImage)
+            Glide.with(holder.userImage.context).load(imageUrl).apply(RequestOptions().centerCrop()).into(holder.userImage)
 
             if(itemList[position].imageUrl?.isEmpty()!!){
                 holder.postImageList.visibility = View.GONE

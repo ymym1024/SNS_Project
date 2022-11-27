@@ -19,6 +19,7 @@ import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentMainBinding
 import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -125,7 +126,7 @@ class MainFragment : Fragment() {
             holder.postTime.text = convertTimestampToDate(itemList[position].timestamp!!)
 
             //user 이미지
-            Glide.with(holder.userImage.context).load(userFollowingList.get(itemList[position].userName)).into(holder.userImage)
+            Glide.with(holder.userImage.context).load(userFollowingList.get(itemList[position].userName)).apply(RequestOptions().centerCrop()).into(holder.userImage)
 
             if(itemList[position].imageUrl?.isEmpty()!!){
                 holder.postImageList.visibility = View.GONE
@@ -174,7 +175,7 @@ class MainFragment : Fragment() {
 
             //댓글 상세화면으로 이동
             holder.postComment.setOnClickListener {
-               findNavController().navigate(MainFragmentDirections.actionMainFragmentToCommentFragment(postIdList[position]))
+               findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailFragment(postIdList[position],itemList[position].uid.toString()))
             }
 
             holder.userImage.setOnClickListener {
