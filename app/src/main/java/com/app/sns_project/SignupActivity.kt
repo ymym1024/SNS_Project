@@ -89,7 +89,7 @@ class SignupActivity : AppCompatActivity() {
                     finish()
                 } else {
                     Log.w("LoginActivity", "signInWithEmail", it.exception)
-                    Toast.makeText(this, "Creation failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "이미 존재하는 이메일 입니다.", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener {
