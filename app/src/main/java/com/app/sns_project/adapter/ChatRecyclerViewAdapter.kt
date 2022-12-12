@@ -1,22 +1,21 @@
-package com.app.sns_project
+package com.app.sns_project.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.app.sns_project.MyViewModel
+import com.app.sns_project.R
+import com.app.sns_project.ui.fragment.ChatFragmentDirections
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
-import org.w3c.dom.Text
 
 class ChatRecyclerViewAdapter(
     private val viewModel: MyViewModel,
@@ -35,7 +34,8 @@ class ChatRecyclerViewAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatRecyclerViewViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.chat_itemview,
+        val itemView = LayoutInflater.from(parent.context).inflate(
+            R.layout.chat_itemview,
             parent, false)
         return ChatRecyclerViewViewHolder(itemView)
     }

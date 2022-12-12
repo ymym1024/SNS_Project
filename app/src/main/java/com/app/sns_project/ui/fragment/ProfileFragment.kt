@@ -1,8 +1,6 @@
-package com.app.sns_project.fragment
+package com.app.sns_project.ui.fragment
 
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,31 +9,26 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.app.sns_project.DTO.PostDTO
-import com.app.sns_project.DTO.UserDTO
-import com.app.sns_project.LoginActivity
+import com.app.sns_project.data.model.PostDTO
+import com.app.sns_project.data.model.UserDTO
+import com.app.sns_project.ui.activity.LoginActivity
 import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentProfileBinding
+import com.app.sns_project.fragment.ImageViewPager2
 import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
@@ -82,7 +75,6 @@ class ProfileFragment : Fragment() {
         }
 
         getProfileInfo()
-        //goUpdateProfile(uid)
         logOut()
 
         return binding.root
@@ -93,9 +85,14 @@ class ProfileFragment : Fragment() {
 
         val chattingButton = binding.userChattingBtn
         chattingButton.setOnClickListener {
-            Log.e("check:","chatting button clicked, username: ${binding.userProfileName.text}")
             findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToChatRoomFragment(binding.userProfileName.text.toString()))
 
+        }
+
+        val profileUpdateButton = binding.profileUpdateBtn
+        profileUpdateButton.setOnClickListener {
+            val uid = auth.currentUser?.uid.toString()
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToProfileUpdateFragment(uid))
         }
     }
 
@@ -106,17 +103,12 @@ class ProfileFragment : Fragment() {
 
     private fun logOut() {
         binding.logoutBtn.setOnClickListener {
+            auth.signOut()
             Toast.makeText(context, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
             startActivity(Intent(activity, LoginActivity::class.java))
         }
     }
-//
-//    private fun goUpdateProfile(uid:String){
-//        binding.profileUpdateBtn.setOnClickListener {
-//            val directions = ProfileFragmentDirections.actionProfileFragmentToProfileUpdateFragment(uid)
-//            findNavController().navigate(directions)
-//        }
-//    }
+
     private fun getPostImage(){
         val contentDTO : ArrayList<PostDTO> = ArrayList()
 
@@ -137,8 +129,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getProfileInfo(){
-        //profile image
-
         profileListener = firestore.collection("user").document(uid).addSnapshotListener { value, error ->
             FirebaseFirestore.getInstance().collection("user").document(auth.currentUser!!.uid).get().addOnSuccessListener {
                 userName = it.data!!["userName"] as String
@@ -291,46 +281,5 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
-    }
-
-    inner class GridImageRecyclerViewAdatper(val context: Context,val content:ArrayList<PostDTO>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
-            //현재 사이즈 뷰 화면 크기의 가로 크기의 1/3값을 가지고 오기
-            val width = resources.displayMetrics.widthPixels / 3
-
-            val imageView = ImageView(parent.context)
-            imageView.layoutParams = LinearLayoutCompat.LayoutParams(width, width)
-
-            return CustomViewHolder(imageView)
-        }
-
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
-            var imageView = (holder as CustomViewHolder).imageView
-            var image :String
-
-            if(content[position].imageUrl!!.isEmpty()){
-                image = ""
-            }else{
-                image = content[position].imageUrl!!.get(0)
-            }
-            Glide.with(holder.itemView.context)
-                .load(image)
-                .apply(RequestOptions().centerCrop())
-                .into(imageView)
-
-            imageView.setOnClickListener {
-
-                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToDetailFragment(postIdList[position],content[position].uid.toString()))
-            }
-        }
-
-        override fun getItemCount(): Int {
-            return content.size
-        }
-
-        inner class CustomViewHolder(var imageView: ImageView) : RecyclerView.ViewHolder(imageView)
     }
 }

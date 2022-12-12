@@ -1,4 +1,4 @@
-package com.app.sns_project
+package com.app.sns_project.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

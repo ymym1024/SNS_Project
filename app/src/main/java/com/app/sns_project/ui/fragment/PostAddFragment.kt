@@ -1,4 +1,4 @@
-package com.app.sns_project.fragment
+package com.app.sns_project.ui.fragment
 
 import android.Manifest
 import android.app.Activity
@@ -22,8 +22,8 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.app.sns_project.DTO.PostDTO
-import com.app.sns_project.ItemPagerAdapter
+import com.app.sns_project.data.model.PostDTO
+import com.app.sns_project.adapter.ItemPagerAdapter
 import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentPostAddBinding
 import com.google.android.material.snackbar.Snackbar

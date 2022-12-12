@@ -1,4 +1,4 @@
-package com.app.sns_project
+package com.app.sns_project.ui.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -6,23 +6,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.app.sns_project.MyViewModel
+import com.app.sns_project.R
+import com.app.sns_project.adapter.ChatRoomRecyclerViewAdapter
+import com.app.sns_project.chatItem
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.lang.System.currentTimeMillis
-import java.util.*
-import kotlin.collections.LinkedHashMap
 
 class ChatRoomFragment : Fragment() {
     private val viewModel by viewModels<MyViewModel>()
@@ -80,7 +78,7 @@ class ChatRoomFragment : Fragment() {
                         val layoutInflater = LayoutInflater.from(context)
                         val view = layoutInflater.inflate(R.layout.custom_dialog_message,null)
 
-                        val alertDialog = AlertDialog.Builder(context,R.style.CustomAlertDialog)
+                        val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialog)
                             .setView(view)
                             .create()
 

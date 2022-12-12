@@ -1,4 +1,4 @@
-package com.app.sns_project.DTO
+package com.app.sns_project.data.model
 
 data class UserDTO(
     var userName: String? = null,//uid 관리

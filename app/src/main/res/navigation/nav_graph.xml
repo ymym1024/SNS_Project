@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/postAddFragment"
-        android:name="com.app.sns_project.fragment.PostAddFragment"
+        android:name="com.app.sns_project.ui.fragment.PostAddFragment"
         android:label="새 게시물"
         tools:layout="@layout/fragment_post_add" >
         <action
@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/postUpdateFragment"
-        android:name="com.app.sns_project.fragment.PostUpdateFragment"
+        android:name="com.app.sns_project.ui.fragment.PostUpdateFragment"
         android:label="게시물 수정"
         tools:layout="@layout/fragment_post_update">
         <argument
@@ -46,7 +46,7 @@
 
     <fragment
         android:id="@+id/FollowFragment"
-        android:name="com.app.sns_project.FollowFragment"
+        android:name="com.app.sns_project.fragment.FollowFragment"
         android:label="친구"
         tools:layout="@layout/fragment_follow">
         <action
@@ -60,7 +60,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.app.sns_project.SearchFragment"
+        android:name="com.app.sns_project.ui.fragment.SearchFragment"
         android:label="검색"
         tools:layout="@layout/fragment_search">
         <argument android:name="searchName"
@@ -72,7 +72,7 @@
 
     <fragment
         android:id="@+id/ChatFragment"
-        android:name="com.app.sns_project.ChatFragment"
+        android:name="com.app.sns_project.ui.fragment.ChatFragment"
         android:label="채팅"
         tools:layout="@layout/fragment_chat" >
         <action
@@ -81,7 +81,7 @@
     </fragment>
     <fragment
         android:id="@+id/ChatRoomFragment"
-        android:name="com.app.sns_project.ChatRoomFragment"
+        android:name="com.app.sns_project.ui.fragment.ChatRoomFragment"
         android:label="채팅방"
         tools:layout="@layout/fragment_chatroom" >
         <argument android:name="chatUserName"
@@ -89,7 +89,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.app.sns_project.fragment.ProfileFragment"
+        android:name="com.app.sns_project.ui.fragment.ProfileFragment"
         android:label="프로필"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -105,7 +105,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.app.sns_project.fragment.DetailFragment"
+        android:name="com.app.sns_project.ui.fragment.DetailFragment"
         android:label="게시물">
         <argument
             android:name="postId"
@@ -122,7 +122,7 @@
     </fragment>
     <dialog
         android:id="@+id/bottomSheetFragment"
-        android:name="com.app.sns_project.fragment.BottomSheetFragment"
+        android:name="com.app.sns_project.ui.fragment.BottomSheetFragment"
         android:label="fragment_bottom_sheet"
         tools:layout="@layout/fragment_bottom_sheet" >
         <action

@@ -1,18 +1,15 @@
-package com.app.sns_project
+package com.app.sns_project.ui.activity
 
-import android.content.ContentValues.TAG
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.app.sns_project.model.ContentDTO
+import com.app.sns_project.R
+import com.app.sns_project.data.model.ContentDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 
@@ -38,16 +35,10 @@ class SignupActivity : AppCompatActivity() {
 
                 if((userPassword == userPasswordConfirm) && userPassword.length < 13 && userPassword.length >= 6) {
                     doSignup(userEmail, userPassword, userName)
-                    //updateProfile(userName)
                 }
                 else if(userPassword != userPasswordConfirm) {
                     Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
                 }
-                //updateProfile(userName)
-//                val user = Firebase.auth.currentUser
-//                if (user != null) {
-//                    println("###########${user.displayName}")
-//                }
             }
             else {
                 Toast.makeText(this, "모든 정보를 입력해 주세요.", Toast.LENGTH_SHORT).show()
@@ -55,18 +46,10 @@ class SignupActivity : AppCompatActivity() {
 
         }
     }
-
     private fun doSignup(userEmail: String, password: String, userName: String) {
         Firebase.auth.createUserWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this) {
                 if (it.isSuccessful) {
-                    Toast.makeText(this, "회원가입 성공!!", Toast.LENGTH_SHORT).show()
-//                    val itemMap = hashMapOf(
-//                        "userName" to userName,
-//                        "followerCount" to 0,
-//                        "followingCount" to 0,
-//                        "profileImage" to "gs://snsproject-638d2.appspot.com/images/profile_images/jeong1.jpeg"
-//                    )
                     var userInfo = ContentDTO.UserInfo(
                         followerCount = 0,
                         followingCount = 0,
@@ -83,12 +66,12 @@ class SignupActivity : AppCompatActivity() {
                         .addOnSuccessListener {
                             println("add user")
                         }
-                    //updateProfile()
+
+                    Toast.makeText(this, "회원가입 성공!!", Toast.LENGTH_SHORT).show()
                     startActivity(
                         Intent(this, LoginActivity::class.java))
                     finish()
                 } else {
-                    Log.w("LoginActivity", "signInWithEmail", it.exception)
                     Toast.makeText(this, "이미 존재하는 이메일 입니다.", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -97,23 +80,5 @@ class SignupActivity : AppCompatActivity() {
                 Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
             }
 
-    }
-
-    private fun updateProfile(userName: String) {
-        val user = Firebase.auth.currentUser
-        val profileUpdates = userProfileChangeRequest {
-            displayName = userName
-            //photoUri = Uri.parse("https://example.com/jane-q-user/profile.jpg")
-        }
-
-        user!!.updateProfile(profileUpdates)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d(TAG, "User profile updated.")
-                }
-            }
-            .addOnFailureListener {
-                println("##########user profile not updated.")
-            }
     }
 }

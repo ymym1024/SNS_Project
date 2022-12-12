@@ -1,8 +1,7 @@
-package com.app.sns_project
+package com.app.sns_project.adapter
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +11,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.app.sns_project.MyViewModel
+import com.app.sns_project.R
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -23,7 +23,8 @@ class RecyclerViewAdapter2(private val viewModel: MyViewModel, val context: Cont
     RecyclerView.Adapter<RecyclerViewAdapter2.RecyclerViewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_view_following,
+        val itemView = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_view_following,
             parent, false)
 //        val inflater = LayoutInflater.from(parent.context)
 //        val binding = ItemViewBinding.inflate(inflater,parent,false)
@@ -64,7 +65,7 @@ class RecyclerViewAdapter2(private val viewModel: MyViewModel, val context: Cont
                 val layoutInflater = LayoutInflater.from(context)
                 val view = layoutInflater.inflate(R.layout.custom_dialog2,null)
 
-                val alertDialog = AlertDialog.Builder(context,R.style.CustomAlertDialog)
+                val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialog)
                     .setView(view)
                     .create()
 

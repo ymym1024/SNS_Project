@@ -1,4 +1,4 @@
-package com.app.sns_project.model
+package com.app.sns_project.data.model
 
 data class ContentDTO(val imageUrl : String? = null, // 이미지 관리
                       var content : String? = null, // 글

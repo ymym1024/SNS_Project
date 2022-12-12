@@ -1,4 +1,4 @@
-package com.app.sns_project
+package com.app.sns_project.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.app.sns_project.adapter.ChatRecyclerViewAdapter
+import com.app.sns_project.MyViewModel
+import com.app.sns_project.R
+import com.app.sns_project.chatTitleItem
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase

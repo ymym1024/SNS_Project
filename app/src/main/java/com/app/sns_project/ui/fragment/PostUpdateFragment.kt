@@ -1,4 +1,4 @@
-package com.app.sns_project.fragment
+package com.app.sns_project.ui.fragment
 
 import android.os.Bundle
 import android.text.Editable
@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import com.app.sns_project.ItemPagerAdapter
+import com.app.sns_project.adapter.ItemPagerAdapter
 import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentPostUpdateBinding
 import com.google.android.material.snackbar.Snackbar

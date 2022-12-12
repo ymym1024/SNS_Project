@@ -1,10 +1,6 @@
-package com.app.sns_project
+package com.app.sns_project.adapter
 
 import android.content.Context
-import android.net.Uri
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.widget.LinearLayoutCompat
