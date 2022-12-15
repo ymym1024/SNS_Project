@@ -35,34 +35,21 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/my_info"
+                android:id="@+id/follower_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/profile_update_btn"
+                    android:id="@+id/user_chatting_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:background="@drawable/custom_button"
                     android:textColor="@color/white"
-                    android:layout_marginRight="20dp"
-                    android:text="프로필 수정"
+                    android:text="채팅"
                     android:textSize="14sp" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/logout_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/custom_button"
-                    android:textColor="@color/white"
-                    android:text="로그아웃"
-
-                    android:textSize="14sp" />
-
             </LinearLayout>
 
             <LinearLayout

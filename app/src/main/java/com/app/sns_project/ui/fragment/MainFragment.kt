@@ -210,7 +210,7 @@ class MainFragment : Fragment() {
                 val bundle = Bundle()
                 bundle.putString("uid", postList[position].uid)
                 bundle.putString("userName",postList[position].userName)
-                findNavController().navigate(R.id.action_mainFragment_to_profileFragment,bundle)
+                findNavController().navigate(R.id.action_mainFragment_to_userProfileFragment,bundle)
             }
 
         }
@@ -275,7 +275,7 @@ class ProfileUpdateFragment : Fragment() {
         if(result.resultCode == Activity.RESULT_OK){
             result.data?.data?.let {
                 val imagePath = getRealPathFromURI(it)
-                Glide.with(this).load(imagePath).apply(RequestOptions().circleCrop()).into(binding.userImageImageView)
+                Glide.with(this).load(imagePath).apply(RequestOptions().circleCrop()).into(binding.userImageUpdateImageView)
 
                 imageUri = imagePath
             }
@@ -310,7 +310,7 @@ class ProfileUpdateFragment : Fragment() {
             //뷰 갱신
             userName = name // 이름 초기화
             binding.nameEdittext.setText(name)
-            Glide.with(this).load(profile).apply(RequestOptions().circleCrop()).into(binding.userImageImageView)
+            Glide.with(this).load(profile).apply(RequestOptions().circleCrop()).into(binding.userImageUpdateImageView)
 
             binding.emailEdittext.setText(FirebaseAuth.getInstance().currentUser!!.email)
         }

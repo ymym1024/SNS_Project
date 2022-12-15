@@ -1,24 +1,21 @@
 package com.app.sns_project.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.app.sns_project.R
 import com.app.sns_project.data.model.PostDTO
 import com.app.sns_project.data.model.UserDTO
-import com.app.sns_project.ui.activity.LoginActivity
-import com.app.sns_project.R
-import com.app.sns_project.databinding.FragmentProfileBinding
+import com.app.sns_project.databinding.FragmentProfileUserBinding
 import com.app.sns_project.fragment.ImageViewPager2
 import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
@@ -30,8 +27,9 @@ import com.google.firebase.firestore.Query
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.text.SimpleDateFormat
 
-class ProfileFragment : Fragment() {
-    private lateinit var binding: FragmentProfileBinding
+
+class ProfileUserFragment : Fragment() {
+    private lateinit var binding: FragmentProfileUserBinding
 
     private lateinit var auth:FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
@@ -65,10 +63,9 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        binding = FragmentProfileUserBinding.inflate(inflater, container, false)
 
         getProfileInfo()
-        logOut()
 
         return binding.root
     }
@@ -76,24 +73,16 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val profileUpdateButton = binding.profileUpdateBtn
-        profileUpdateButton.setOnClickListener {
-            val uid = auth.currentUser?.uid.toString()
-            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToProfileUpdateFragment(uid))
+        val chattingButton = binding.userChattingBtn
+        chattingButton.setOnClickListener {
+            findNavController().navigate(ProfileUserFragmentDirections.actionUserProfileFragmentToChatRoomFragment(binding.userProfileName.text.toString()))
+
         }
     }
 
     override fun onResume() {
         super.onResume()
         getPostImage()
-    }
-
-    private fun logOut() {
-        binding.logoutBtn.setOnClickListener {
-            auth.signOut()
-            Toast.makeText(context, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(activity, LoginActivity::class.java))
-        }
     }
 
     private fun getPostImage(){
