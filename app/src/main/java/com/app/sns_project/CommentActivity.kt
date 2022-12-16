@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.app.sns_project.model.ContentDTO
+import com.app.sns_project.data.model.Comment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -37,7 +37,7 @@ class CommentActivity : AppCompatActivity() {
 
         val commentSendButton = findViewById<Button>(R.id.commentSendButton)
         commentSendButton.setOnClickListener {
-            var comment = ContentDTO.Comment()
+            var comment = Comment()
             comment.userId = FirebaseAuth.getInstance().currentUser?.email
             comment.uid = FirebaseAuth.getInstance().currentUser?.uid
             val commentEditText = findViewById<EditText>(R.id.commentEditText)
@@ -56,7 +56,7 @@ class CommentActivity : AppCompatActivity() {
 
         val deleteButton = findViewById<ImageButton>(R.id.deleteButton)
 
-        var comments : ArrayList<ContentDTO.Comment> = arrayListOf() // comment 를 담을 ArrayList
+        var comments : ArrayList<Comment> = arrayListOf() // comment 를 담을 ArrayList
         init {
             FirebaseFirestore.getInstance()
                 .collection("post")
@@ -67,7 +67,7 @@ class CommentActivity : AppCompatActivity() {
                     if(querySnapShot == null)
                         return@addSnapshotListener
                     for(snapshot in querySnapShot.documents!!) {
-                        comments.add(snapshot.toObject(ContentDTO.Comment::class.java)!!)
+                        comments.add(snapshot.toObject(Comment::class.java)!!)
                     }
                     notifyDataSetChanged() // 리싸이클러 뷰 새로고침
                 }

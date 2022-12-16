@@ -45,14 +45,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-<!--    <ImageView-->
-<!--        android:id="@+id/post_image"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:adjustViewBounds="true"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        tools:srcCompat="@tools:sample/backgrounds/scenic" />-->
-
     <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
         android:id="@+id/post_image_indicator"
         android:layout_width="wrap_content"
@@ -110,14 +102,6 @@
             android:text="TextView"
             android:textColor="@color/black" />
     </LinearLayout>
-
-<!--    <TextView-->
-<!--        android:id="@+id/comment_button"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:padding="10dp"-->
-<!--        android:text="댓글 남기기"-->
-<!--        android:textColor="@color/black" />-->
 
     <View
         android:layout_width="match_parent"

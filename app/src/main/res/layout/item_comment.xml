@@ -38,7 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_margin="7dp"
-        android:src="@drawable/icondelete"
         android:scaleType="center"
-        android:text="delete" />
+        android:src="@drawable/icondelete" />
 </LinearLayout>

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable-v24/custom_button.xml" value="0.212" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.123" />
         <entry key="app/src/main/res/drawable/bg_gradient.xml" value="0.121" />
@@ -27,12 +28,19 @@
         <entry key="app/src/main/res/layout/activity_comment.xml" value="0.2977150537634409" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.11383056640625011" />
-        <entry key="app/src/main/res/layout/activity_signup.xml" value="0.27956989247311825" />
+        <entry key="app/src/main/res/layout/activity_signup.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/chat_itemview.xml" value="0.23515625" />
+        <entry key="app/src/main/res/layout/chatroom_itemview.xml" value="0.23515625" />
+        <entry key="app/src/main/res/layout/comment_fragment.xml" value="0.2640625" />
         <entry key="app/src/main/res/layout/custom_button.xml" value="0.2640625" />
+        <entry key="app/src/main/res/layout/custom_dialog.xml" value="0.25037481259370314" />
+        <entry key="app/src/main/res/layout/custom_dialog2.xml" value="0.25037481259370314" />
+        <entry key="app/src/main/res/layout/custom_dialog_message.xml" value="0.25037481259370314" />
+        <entry key="app/src/main/res/layout/custom_dialog_postdelete.xml" value="0.25037481259370314" />
         <entry key="app/src/main/res/layout/custom_dialog_search.xml" value="0.2399193548387097" />
         <entry key="app/src/main/res/layout/fragment_bottom_sheet.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.25703125" />
-        <entry key="app/src/main/res/layout/fragment_chatroom.xml" value="0.25703125" />
+        <entry key="app/src/main/res/layout/fragment_chatroom.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_detail.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_follow.xml" value="0.25625" />
         <entry key="app/src/main/res/layout/fragment_follower.xml" value="0.25625" />
@@ -42,16 +50,18 @@
         <entry key="app/src/main/res/layout/fragment_post_add.xml" value="0.34868421052631576" />
         <entry key="app/src/main/res/layout/fragment_post_update.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_postupdate.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.10697674418604651" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.362962962962963" />
         <entry key="app/src/main/res/layout/fragment_profile2.xml" value="0.3987968362787718" />
         <entry key="app/src/main/res/layout/fragment_profile_update.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_profile_user.xml" value="0.29375" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.2640625" />
         <entry key="app/src/main/res/layout/item_comment.xml" value="0.2640625" />
+        <entry key="app/src/main/res/layout/item_view_follower.xml" value="0.239247311827957" />
         <entry key="app/src/main/res/layout/layout_bottom_sheet.xml" value="0.375" />
         <entry key="app/src/main/res/layout/layout_image_item.xml" value="0.3299731182795699" />
         <entry key="app/src/main/res/layout/layout_pager_item.xml" value="0.1859375" />
-        <entry key="app/src/main/res/layout/layout_post_item.xml" value="0.375" />
-        <entry key="app/src/main/res/menu/menu_bottom_nav.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_post_item.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/menu_bottom_nav.xml" value="0.19387755102040816" />
       </map>
     </option>
   </component>

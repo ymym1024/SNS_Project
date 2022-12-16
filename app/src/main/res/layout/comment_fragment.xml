@@ -75,14 +75,14 @@
         android:layout_width="match_parent"
         android:layout_height="1dp">
     </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@+id/image_division"
         android:id="@+id/commentRecyclerview"
         android:layout_width="match_parent"
-        android:layout_height="150dp">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="150dp"
+        android:layout_below="@+id/image_division"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"></androidx.recyclerview.widget.RecyclerView>
 
     <Button
         android:id="@+id/commentSendButton"
