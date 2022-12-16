@@ -10,18 +10,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.sns_project.MyViewModel
 import com.app.sns_project.R
-import com.app.sns_project.adapter.RecyclerViewAdapter2
+import com.app.sns_project.adapter.RecyclerViewAdapter
 import com.app.sns_project.data.model.Item
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class FollowingFragment : Fragment() {
+
+class FollowerFragment : Fragment() {
     private val viewModel by viewModels<MyViewModel>()
 
     val db = Firebase.firestore
 
-    // 현재 로그인한 user의 username
+    // 현재 로그인한 user의 uid
     val currentUid = Firebase.auth.currentUser?.uid.toString()
 
     // user Collection Ref
@@ -36,25 +37,25 @@ class FollowingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_following, container, false)
+        return inflater.inflate(R.layout.fragment_follower, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // firestore에서 로그인한 user의 uid인 document에서 팔로잉 목록과 프로필 사진을 끌어와 viewmodel에 저장
+        // firestore에서 로그인한 user의 uid인 document에서 팔로워 목록과 프로필 사진을 끌어와 viewmodel에 저장
         userColRef.document(currentUid).get()
             .addOnSuccessListener {
-                for (i in it["following"] as MutableMap<*, *>)
-                    viewModel.addItem2(Item(i.key.toString(),i.value.toString()))
+                for (i in it["followers"] as MutableMap<*, *>)
+                    viewModel.addItem(Item(i.key.toString(), i.value.toString()))
             }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        val adapter = RecyclerViewAdapter2(viewModel,context,this)
+        val adapter = RecyclerViewAdapter(viewModel, context, this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        viewModel.itemsListData2.observe(viewLifecycleOwner){
+        viewModel.itemsListData.observe(viewLifecycleOwner){
             adapter.notifyDataSetChanged()
         }
 

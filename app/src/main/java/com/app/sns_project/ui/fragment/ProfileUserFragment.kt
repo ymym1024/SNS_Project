@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.app.sns_project.R
-import com.app.sns_project.data.model.PostDTO
-import com.app.sns_project.data.model.UserDTO
+import com.app.sns_project.adapter.PostImageViewPager
+import com.app.sns_project.data.model.Post
+import com.app.sns_project.data.model.User
 import com.app.sns_project.databinding.FragmentProfileUserBinding
-import com.app.sns_project.fragment.ImageViewPager2
 import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -86,14 +86,14 @@ class ProfileUserFragment : Fragment() {
     }
 
     private fun getPostImage(){
-        val contentDTO : ArrayList<PostDTO> = ArrayList()
+        val contentDTO : ArrayList<Post> = ArrayList()
 
         postListener = firestore?.collection("post").whereEqualTo("uid",uid).orderBy("timestamp", Query.Direction.DESCENDING).addSnapshotListener { value, error ->
             contentDTO.clear()
 
             if (value == null) return@addSnapshotListener
             for (v in value?.documents!!) {
-                val data = v.toObject(PostDTO::class.java)!!
+                val data = v.toObject(Post::class.java)!!
                 contentDTO.add(data)
                 postIdList.add(v.id)
             }
@@ -114,16 +114,16 @@ class ProfileUserFragment : Fragment() {
         }
 
         followingListener = firestore?.collection("user")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
-            val userDTO = documentSnapshot?.toObject(UserDTO::class.java)
-            if (userDTO == null) return@addSnapshotListener
-            val followingCount = userDTO?.followingCount.toString()
+            val user = documentSnapshot?.toObject(User::class.java)
+            if (user == null) return@addSnapshotListener
+            val followingCount = user?.followingCount.toString()
             binding.userProfileFollowing.text = followingCount
         }
 
         followerListener = firestore?.collection("user")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
-            val userDTO = documentSnapshot?.toObject(UserDTO::class.java)
-            if (userDTO == null) return@addSnapshotListener
-            val followerCount = userDTO?.followerCount.toString()
+            val user = documentSnapshot?.toObject(User::class.java)
+            if (user == null) return@addSnapshotListener
+            val followerCount = user?.followerCount.toString()
             binding.userProfileFollower.text = followerCount
         }
     }
@@ -150,7 +150,7 @@ class ProfileUserFragment : Fragment() {
         }
     }
 
-    inner class RecyclerViewAdapter(var itemList: ArrayList<PostDTO>) : RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder>() {
+    inner class RecyclerViewAdapter(var itemList: ArrayList<Post>) : RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
             return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_post_item, parent, false))
@@ -182,7 +182,7 @@ class ProfileUserFragment : Fragment() {
                 holder.postImageList.visibility = View.GONE
                 holder.postIndicator.visibility = View.GONE
             }else{
-                holder.postImageList.adapter = ImageViewPager2(itemList[position]?.imageUrl)
+                holder.postImageList.adapter = PostImageViewPager(itemList[position]?.imageUrl)
 
                 if(itemList[position].imageUrl?.size == 1){
                     holder.postIndicator.visibility = View.GONE
@@ -209,7 +209,7 @@ class ProfileUserFragment : Fragment() {
                 val doc = firestore?.collection("post").document(postIdList[position])
 
                 firestore?.runTransaction { transaction ->
-                    val post = transaction.get(doc).toObject(PostDTO::class.java)
+                    val post = transaction.get(doc).toObject(Post::class.java)
 
                     if (post!!.favorites.containsKey(uid)) {
                         post.favoriteCount = post?.favoriteCount - 1

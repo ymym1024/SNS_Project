@@ -2,10 +2,10 @@ package com.app.sns_project
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.app.sns_project.data.model.Item
+import com.app.sns_project.data.model.chatItem
+import com.app.sns_project.data.model.chatTitleItem
 
-data class Item(val username: String, val profileImageUrl: String)
-data class chatItem(val time: Long, val username: String, val message: String)
-data class chatTitleItem(val username: String, val profileImageUrl: String, val lastMessage: String)
 
 class MyViewModel: ViewModel() {
     val itemsListData = MutableLiveData<ArrayList<Item>>()

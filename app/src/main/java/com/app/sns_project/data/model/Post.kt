@@ -1,6 +1,6 @@
 package com.app.sns_project.data.model
 
-data class PostDTO(
+data class Post(
     var uid : String?=null,
     var userName:String?=null,
     var content : String?=null,

@@ -22,7 +22,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.app.sns_project.data.model.PostDTO
+import com.app.sns_project.data.model.Post
 import com.app.sns_project.adapter.ItemPagerAdapter
 import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentPostAddBinding
@@ -131,7 +131,7 @@ class PostAddFragment : Fragment() {
 
             binding.progressBar.visibility = View.VISIBLE
 
-            val post = PostDTO()
+            val post = Post()
             post.uid = auth.currentUser?.uid
             post.userName = binding.userName.text.toString() // 임시로 저장해놓음
             post.content = binding.postEdittext.text.toString()

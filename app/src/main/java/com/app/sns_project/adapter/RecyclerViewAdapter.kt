@@ -12,9 +12,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.app.sns_project.Item
 import com.app.sns_project.MyViewModel
 import com.app.sns_project.R
+import com.app.sns_project.data.model.Item
 import com.app.sns_project.util.pushMessage
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth

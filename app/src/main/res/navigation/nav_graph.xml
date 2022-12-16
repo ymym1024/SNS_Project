@@ -42,7 +42,7 @@
 
     <fragment
         android:id="@+id/FollowFragment"
-        android:name="com.app.sns_project.fragment.FollowFragment"
+        android:name="com.app.sns_project.ui.fragment.FollowFragment"
         android:label="친구"
         tools:layout="@layout/fragment_follow">
         <action
@@ -144,7 +144,7 @@
     </dialog>
     <fragment
         android:id="@+id/profileUpdateFragment"
-        android:name="com.app.sns_project.fragment.ProfileUpdateFragment"
+        android:name="com.app.sns_project.ui.fragment.PostUpdateFragment"
         android:label="프로필 수정"
         tools:layout="@layout/fragment_profile_update" >
         <argument

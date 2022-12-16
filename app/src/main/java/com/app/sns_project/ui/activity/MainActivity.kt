@@ -14,9 +14,9 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.app.sns_project.R
 import com.app.sns_project.databinding.ActivityMainBinding
-import com.app.sns_project.fragment.FollowFragment
 import com.app.sns_project.fragment.MainFragment
 import com.app.sns_project.ui.fragment.ChatFragment
+import com.app.sns_project.ui.fragment.FollowFragment
 import com.app.sns_project.ui.fragment.PostAddFragment
 import com.app.sns_project.ui.fragment.ProfileFragment
 import com.app.sns_project.util.pushMessage

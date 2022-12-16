@@ -91,9 +91,6 @@ class ChatRoomRecyclerViewAdapter(
         }
 
         private fun convertTimestampToDate(time: Long?): String {
-//            val currentDateTime =
-//                Instant.ofEpochMilli(System.currentTimeMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime()
-//            val date = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm").format(currentDateTime)
             val sdf = SimpleDateFormat("yyyy.MM.dd HH:mm")
             val date = sdf.format(time).toString()
             return date

@@ -1,7 +1,7 @@
 package com.app.sns_project.util
 
 import android.util.Log
-import com.app.sns_project.data.model.PushMessageDTO
+import com.app.sns_project.data.model.PushMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
@@ -23,7 +23,7 @@ class pushMessage {
             if(it.isSuccessful){
                 var token = it.result["pushtoken"].toString()
                 println("token ::"+token)
-                var pushDTO = PushMessageDTO()
+                var pushDTO = PushMessage()
                 pushDTO.to = token
                 pushDTO.notification?.title = title
                 pushDTO.notification?.body = msg

@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.sns_project.MyViewModel
 import com.app.sns_project.R
 import com.app.sns_project.adapter.ChatRoomRecyclerViewAdapter
-import com.app.sns_project.chatItem
+import com.app.sns_project.data.model.chatItem
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -143,8 +143,6 @@ class ChatRoomFragment : Fragment() {
     }
 
     fun readChatRoom(chatUserName: String) {
-//        val args: ChatRoomFragmentArgs by navArgs()
-//        val chatUserName = args.chatUserName
         userColRef.document(currentUid).get()
             .addOnSuccessListener {
                 viewModel.deleteAllChatItem()
