@@ -44,8 +44,7 @@ class ProfileUpdateFragment : Fragment() {
         if(result.resultCode == Activity.RESULT_OK){
             result.data?.data?.let {
                 val imagePath = getRealPathFromURI(it)
-                Log.d("imge url",imagePath)
-                //binding.userImageImageView.setImageURI(it)
+
                 Glide.with(this).load(imagePath).apply(RequestOptions().circleCrop()).into(binding.userImageUpdateImageView)
                 imageUri = imagePath
             }

@@ -7,9 +7,8 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.app.sns_project.fragment.MainFragment"
-        android:label="홈"
-        tools:layout="@layout/fragment_main" >
+        android:name="com.app.sns_project.ui.fragment.MainFragment"
+        android:label="홈">
         <action
             android:id="@+id/action_mainFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
@@ -86,7 +85,7 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.app.sns_project.ui.fragment.ProfileFragment"
-        android:label="프로필"
+        android:label="내 프로필"
         tools:layout="@layout/fragment_profile" >
         <action
             android:id="@+id/action_profileFragment_to_detailFragment"
@@ -101,6 +100,12 @@
         android:name="com.app.sns_project.ui.fragment.ProfileUserFragment"
         android:label="프로필"
         tools:layout="@layout/fragment_profile_user">
+        <argument
+            android:name="uid"
+            app:argType="string" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
         <action
             android:id="@+id/action_userProfileFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
@@ -144,7 +149,7 @@
     </dialog>
     <fragment
         android:id="@+id/profileUpdateFragment"
-        android:name="com.app.sns_project.ui.fragment.PostUpdateFragment"
+        android:name="com.app.sns_project.ui.fragment.ProfileUpdateFragment"
         android:label="프로필 수정"
         tools:layout="@layout/fragment_profile_update" >
         <argument

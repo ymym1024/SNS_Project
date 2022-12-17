@@ -12,13 +12,16 @@ import com.app.sns_project.util.CommonService
 import com.app.sns_project.data.FirebaseDbService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import java.util.HashMap
 
-class PostAdapter(var postList:ArrayList<Post>, var postIdList :ArrayList<String>,val followList : HashMap<String,String>, listener: onListMoveInterface) :
+class PostAdapter(var postList:ArrayList<Post>, var postIdList :ArrayList<String>, listener: onListMoveInterface) :
     RecyclerView.Adapter<PostAdapter.PostViewHolder>(){
 
     private var dbService : FirebaseDbService = FirebaseDbService()
     private var onListMoveInterface : onListMoveInterface = listener
+    private var list : HashMap<String,String> = hashMapOf()
+
+    private var type : String = "follow"
+    private var imageUrl : String = ""
 
     inner class PostViewHolder(private val binding:LayoutPostItemBinding) : RecyclerView.ViewHolder(binding.root){
 
@@ -30,11 +33,16 @@ class PostAdapter(var postList:ArrayList<Post>, var postIdList :ArrayList<String
             binding.postContent.text = postItem.content
             binding.postTime.text = CommonService().convertTimestampToDate(postItem.timestamp)
 
-            val userProfileImage = followList[postItem.userName]
+            val userProfileImage = list[postItem.userName]
 
             //user 이미지 불러오기
-            Glide.with(binding.userImageImageView.context).load(userProfileImage).apply(
-                RequestOptions().centerCrop()).into(binding.userImageImageView)
+            when(type){
+                "my" -> Glide.with(binding.userImageImageView.context).load(imageUrl).apply(
+                    RequestOptions().centerCrop()).into(binding.userImageImageView)
+                "follow" -> Glide.with(binding.userImageImageView.context).load(userProfileImage).apply(
+                        RequestOptions().centerCrop()).into(binding.userImageImageView)
+
+            }
 
             binding.postFavoriteCnt.text = if(postItem.favoriteCount > 0) "좋아요 ${postItem.favoriteCount}개" else ""
 
@@ -81,7 +89,6 @@ class PostAdapter(var postList:ArrayList<Post>, var postIdList :ArrayList<String
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        Log.d("userFollowList",followList.toString())
         holder.bind(postList[position],position)
     }
 
@@ -91,6 +98,16 @@ class PostAdapter(var postList:ArrayList<Post>, var postIdList :ArrayList<String
 
     override fun getItemViewType(position: Int): Int {
         return position
+    }
+
+    fun setFollowList(list:HashMap<String,String>){
+        this.list=list
+        Log.d("list",list.toString())
+    }
+
+    fun setProfileImage(type:String,imageUrl:String){
+        this.type = type
+        this.imageUrl = imageUrl
     }
 }
 

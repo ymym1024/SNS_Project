@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.sns_project.MyViewModel
 import com.app.sns_project.R
+import com.app.sns_project.util.CommonService
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -69,7 +70,7 @@ class ChatRoomRecyclerViewAdapter(
                     .addOnSuccessListener {
                         if(username == it["userName"]){ // 내가 보낸 메세지면
                             myMessage.text = message
-                            myTime.text = convertTimestampToDate(time)
+                            myTime.text = CommonService().convertTimestampToDate(time)
                             myMessage.visibility = View.VISIBLE
                             myTime.visibility = View.VISIBLE
                         }
@@ -82,20 +83,13 @@ class ChatRoomRecyclerViewAdapter(
                                     }
                                 }
                             yourMessage.text = message
-                            yourTime.text = convertTimestampToDate(time)
+                            yourTime.text = CommonService().convertTimestampToDate(time)
                             yourMessage.visibility = View.VISIBLE
                             yourTime.visibility = View.VISIBLE
                         }
                     }
             }
         }
-
-        private fun convertTimestampToDate(time: Long?): String {
-            val sdf = SimpleDateFormat("yyyy.MM.dd HH:mm")
-            val date = sdf.format(time).toString()
-            return date
-        }
-
     }
 
 }

@@ -197,7 +197,7 @@ class DetailFragment : Fragment() {
 
         val favoriteCount = profile.favoriteCount
         if(favoriteCount>0){
-            binding.postFavoriteCnt.text = "${favoriteCount}명이 좋아합니다."
+            binding.postFavoriteCnt.text = "좋아요 ${favoriteCount}개"
         }else{
             binding.postFavoriteCnt.text = ""
         }

@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.app.sns_project.R
+import com.app.sns_project.adapter.PostAdapter
 import com.app.sns_project.adapter.PostImageViewPager
+import com.app.sns_project.adapter.onListMoveInterface
 import com.app.sns_project.data.model.Post
 import com.app.sns_project.data.model.User
 import com.app.sns_project.databinding.FragmentProfileUserBinding
@@ -28,13 +30,15 @@ import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import java.text.SimpleDateFormat
 
 
-class ProfileUserFragment : Fragment() {
+class ProfileUserFragment : Fragment(),onListMoveInterface{
     private lateinit var binding: FragmentProfileUserBinding
 
     private lateinit var auth:FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
 
+    private var postList : ArrayList<Post> = arrayListOf()
     private val postIdList : ArrayList<String> = ArrayList()
+    private var userFollowingList : HashMap<String,String> = HashMap()
 
     private var uid = ""
     private var userName = ""
@@ -86,21 +90,22 @@ class ProfileUserFragment : Fragment() {
     }
 
     private fun getPostImage(){
-        val contentDTO : ArrayList<Post> = ArrayList()
-
         postListener = firestore?.collection("post").whereEqualTo("uid",uid).orderBy("timestamp", Query.Direction.DESCENDING).addSnapshotListener { value, error ->
-            contentDTO.clear()
+            postList.clear()
 
             if (value == null) return@addSnapshotListener
             for (v in value?.documents!!) {
                 val data = v.toObject(Post::class.java)!!
-                contentDTO.add(data)
+                postList.add(data)
                 postIdList.add(v.id)
             }
-            binding.userPostTextview.text = contentDTO.size.toString()
-            binding.imageRecylcerview.adapter = RecyclerViewAdapter(contentDTO)
+            binding.userPostTextview.text = postList.size.toString()
+            val mAdapter = PostAdapter(postList,postIdList,this)
+            mAdapter.setProfileImage("my",imageUrl)
+            binding.imageRecylcerview.adapter = mAdapter
             binding.imageRecylcerview.layoutManager = LinearLayoutManager(context)
             binding.imageRecylcerview.setHasFixedSize(true)
+            mAdapter.notifyDataSetChanged()
         }
     }
 
@@ -117,6 +122,7 @@ class ProfileUserFragment : Fragment() {
             val user = documentSnapshot?.toObject(User::class.java)
             if (user == null) return@addSnapshotListener
             val followingCount = user?.followingCount.toString()
+            userFollowingList = user?.following
             binding.userProfileFollowing.text = followingCount
         }
 
@@ -128,14 +134,9 @@ class ProfileUserFragment : Fragment() {
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("profileFragment","onDetach")
-    }
-
     override fun onStop() {
         super.onStop()
-        Log.d("profileFragment","onStop")
+
         if(followerListener!=null){
             followerListener!!.remove()
         }
@@ -150,111 +151,11 @@ class ProfileUserFragment : Fragment() {
         }
     }
 
-    inner class RecyclerViewAdapter(var itemList: ArrayList<Post>) : RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder>() {
+    override fun movePostToProfile(position: Int) {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-            return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_post_item, parent, false))
-        }
+    }
 
-        inner class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val postUser : TextView = itemView.findViewById(R.id.post_user)
-            val userName : TextView = itemView.findViewById(R.id.user_name)
-            val userImage : ImageView = itemView.findViewById(R.id.user_image_imageView)
-            val postContent : TextView = itemView.findViewById(R.id.post_content)
-            val postTime : TextView = itemView.findViewById(R.id.post_time)
-            val postImageList : ViewPager2 = itemView.findViewById(R.id.post_image)
-            val postIndicator : DotsIndicator = itemView.findViewById(R.id.post_image_indicator)
-            val postFavoriteCnt : TextView = itemView.findViewById(R.id.post_favorite_cnt)
-            val postFavorite : ImageView = itemView.findViewById(R.id.post_favorite)
-            val postComment : ImageView = itemView.findViewById(R.id.comment_button)
-        }
-
-        override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-            holder.postUser.text = itemList[position].userName
-            holder.userName.text = itemList[position].userName
-            holder.postContent.text = itemList[position].content
-            holder.postTime.text = convertTimestampToDate(itemList[position].timestamp!!)
-
-            //user 이미지 -> 내계정조회
-            Glide.with(holder.userImage.context).load(imageUrl).apply(RequestOptions().centerCrop()).into(holder.userImage)
-
-            if(itemList[position].imageUrl?.isEmpty()!!){
-                holder.postImageList.visibility = View.GONE
-                holder.postIndicator.visibility = View.GONE
-            }else{
-                holder.postImageList.adapter = PostImageViewPager(itemList[position]?.imageUrl)
-
-                if(itemList[position].imageUrl?.size == 1){
-                    holder.postIndicator.visibility = View.GONE
-                }else{
-                    holder.postIndicator.setViewPager2(holder.postImageList)
-                }
-            }
-
-            if(itemList[position].favoriteCount>0){
-                holder.postFavoriteCnt.text = "좋아요 ${itemList[position].favoriteCount}개"
-            }else{
-                holder.postFavoriteCnt.text = ""
-            }
-
-            //좋아요 버튼 상태값 변경
-            if(itemList[position].favorites.containsKey(uid)){
-                holder.postFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_24)
-            }else{
-                holder.postFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_border_24)
-            }
-
-            //좋아요 버튼 클릭 이벤트
-            holder.postFavorite.setOnClickListener {
-                val doc = firestore?.collection("post").document(postIdList[position])
-
-                firestore?.runTransaction { transaction ->
-                    val post = transaction.get(doc).toObject(Post::class.java)
-
-                    if (post!!.favorites.containsKey(uid)) {
-                        post.favoriteCount = post?.favoriteCount - 1
-                        post.favorites.remove(uid) // 사용자 remove
-                    } else {
-                        post.favoriteCount = post?.favoriteCount + 1
-                        post.favorites[uid] = true //사용자 추가
-                        alarmFavorite(post.uid!!)
-                    }
-                    transaction.set(doc, post)
-                }
-            }
-
-            //사용자 프로필 화면으로 이동
-
-            //댓글 상세화면으로 이동
-            holder.postComment.setOnClickListener {
-                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToDetailFragment(postIdList[position],itemList[position].uid.toString()))
-            }
-
-        }
-        override fun getItemCount(): Int {
-            return itemList.size
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return position
-        }
-
-        private fun convertTimestampToDate(time: Long?): String {
-            val sdf = SimpleDateFormat("yyyy.MM.dd HH:mm")
-            val date = sdf.format(time).toString()
-            return date
-        }
-
-        private fun alarmFavorite(postUseruid:String){
-            firestore.collection("user").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
-                val userName = it["userName"] as String
-
-                Log.d("userName",userName)
-                if(!postUseruid.equals(FirebaseAuth.getInstance().currentUser!!.uid)){
-                    var message = String.format("%s 님이 좋아요를 눌렀습니다.",userName)
-                    pushMessage()?.sendMessage(postUseruid, "알림 메세지 입니다.", message)
-                }
-            }
-        }
+    override fun movePostToComment(position: Int) {
+        findNavController().navigate(ProfileUserFragmentDirections.actionUserProfileFragmentToDetailFragment(postIdList[position],postList[position].uid.toString()))
     }
 }

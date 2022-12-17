@@ -70,12 +70,10 @@ class ChatRecyclerViewAdapter(
 
             }
 
-            chatLastMessage.setOnClickListener {
-//                NavController(context).navigate(ChatFragmentDirections.actionChatFragmentToChatRoomFragment(""))
+            itemView.setOnClickListener {
                 fragment.findNavController().navigate(ChatFragmentDirections.actionChatFragmentToChatRoomFragment(chatUsername.text.toString()))
+
             }
-
-
         }
 
     }

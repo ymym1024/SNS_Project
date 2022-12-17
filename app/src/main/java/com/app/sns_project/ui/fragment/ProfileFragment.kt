@@ -47,13 +47,7 @@ class ProfileFragment : Fragment(),onListMoveInterface {
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
-        val bundle = arguments
-
-        if (bundle != null) {
-            uid = bundle.getString("uid", "")
-        }else{
-            uid = auth.currentUser!!.uid
-        }
+        uid = auth.currentUser!!.uid
     }
 
     override fun onCreateView(
@@ -102,9 +96,12 @@ class ProfileFragment : Fragment(),onListMoveInterface {
                 postIdList.add(v.id)
             }
             binding.userPostTextview.text = postList.size.toString()
-            binding.imageRecylcerview.adapter = PostAdapter(postList,postIdList,userFollowingList,this)
+            val mAdapter = PostAdapter(postList,postIdList,this)
+            mAdapter.setProfileImage("my",imageUrl)
+            binding.imageRecylcerview.adapter = mAdapter
             binding.imageRecylcerview.layoutManager = LinearLayoutManager(context)
             binding.imageRecylcerview.setHasFixedSize(true)
+            mAdapter.notifyDataSetChanged()
         }
     }
 
@@ -151,7 +148,7 @@ class ProfileFragment : Fragment(),onListMoveInterface {
     }
 
     override fun movePostToProfile(position: Int) {
-        return
+
     }
 
     override fun movePostToComment(position: Int) {

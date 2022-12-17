@@ -26,6 +26,8 @@ import com.app.sns_project.data.model.Post
 import com.app.sns_project.adapter.ItemPagerAdapter
 import com.app.sns_project.R
 import com.app.sns_project.databinding.FragmentPostAddBinding
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -96,6 +98,8 @@ class PostAddFragment : Fragment() {
         firestore = FirebaseFirestore.getInstance()
 
         firestore.collection("user").document(auth.currentUser?.uid!!).get().addOnSuccessListener {
+            Glide.with(this).load(it.get("profileImage").toString()).apply(
+                RequestOptions().centerCrop()).into(binding.userImageImageView)
             binding.userName.text = it.get("userName").toString()
         }
 
